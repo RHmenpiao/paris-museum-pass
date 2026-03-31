@@ -1,0 +1,192 @@
+╔═══════════════════════════════════════════════════════════════╗
+║              🎯 部署关键信息速查表                             ║
+║            复制粘贴这些命令和链接                              ║
+╚═══════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════════
+
+📋 重要链接
+
+GitHub 注册：https://github.com/signup
+GitHub 登录：https://github.com
+
+Vercel 官网：https://vercel.com
+Vercel 注册：https://vercel.com/signup
+
+新建 GitHub 仓库：https://github.com/new
+你的仓库地址：https://github.com/【你的用户名】/paris-museum-pass
+
+GitHub 授权管理：https://github.com/settings/applications
+
+
+════════════════════════════════════════════════════════════════
+
+💾 文件位置
+
+网站文件夹：
+c:\Users\Administrator\WorkBuddy\20260330195151\
+
+核心文件：
+• index.html ← 首页
+• map.html ← 地图页
+• vercel.json ← Vercel配置（不用改）
+
+
+════════════════════════════════════════════════════════════════
+
+🔧 命令行命令（复制粘贴用）
+
+【第1个命令】检查 Git 是否安装
+─────────────────────────────────
+git --version
+
+
+【第2个命令】上传到 GitHub
+─────────────────────────────────
+git init
+git config user.email "你的邮箱@qq.com"
+git config user.name "你的GitHub用户名"
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/你的GitHub用户名/paris-museum-pass.git
+git push -u origin main
+
+
+【第3个命令】更新网站（以后用）
+─────────────────────────────────
+git add .
+git commit -m "Update"
+git push
+
+
+════════════════════════════════════════════════════════════════
+
+📝 填空模板
+
+【GitHub 用户名】
+请在 https://github.com 查看你的用户名
+示例：zhang123
+你的：_________________________________
+
+
+【GitHub 邮箱】
+示例：zhang@qq.com
+你的：_________________________________
+
+
+【仓库 URL】
+格式：https://github.com/【你的用户名】/paris-museum-pass.git
+示例：https://github.com/zhang123/paris-museum-pass.git
+你的：_________________________________
+
+
+【你的网站 URL】
+格式：https://paris-museum-pass.vercel.app
+（注意：这是默认域名，自动生成，不需要改）
+你的：https://paris-museum-pass.vercel.app
+
+
+════════════════════════════════════════════════════════════════
+
+✅ 部署进度检查清单
+
+□ 第0步：装好 Git（git --version 能显示版本号）
+□ 第1步：创建 GitHub 账号（能登录 github.com）
+□ 第2步：创建仓库"paris-museum-pass"（Public）
+□ 第3步：运行 git push（文件成功上传到 GitHub）
+□ 第4步：在 Vercel 登录并授权（Connected to GitHub）
+□ 第5步：Vercel 导入仓库并点击 Deploy
+□ 第6步：等待部署完成（看到绿色 ✓ 或蓝色 Visit）
+□ 第7步：点击 Visit 查看网站（成功！🎉）
+
+
+════════════════════════════════════════════════════════════════
+
+🎯 5个关键步骤
+
+1️⃣ 创建 GitHub 账号 → https://github.com/signup
+2️⃣ 创建仓库"paris-museum-pass" → 选 Public
+3️⃣ 运行 git push 上传文件 → 使用上面的【第2个命令】
+4️⃣ 在 Vercel 授权并导入仓库 → https://vercel.com
+5️⃣ 点击 Deploy → 等待完成 → 点击 Visit
+
+
+════════════════════════════════════════════════════════════════
+
+⏱️ 耗时估计
+
+创建 GitHub 账号：2-3 分钟
+创建仓库：1 分钟
+上传文件（git push）：1-2 分钟
+在 Vercel 部署：2-3 分钟
+────────────────────────
+总计：7-10 分钟
+
+
+════════════════════════════════════════════════════════════════
+
+🆘 常见错误处理
+
+【错误】"git：找不到命令"
+【原因】没装 Git
+【解决】https://git-scm.com/download/win 下载安装
+
+【错误】"认证失败" 或 "Permission denied"
+【原因】用户名/密码错误，或需要 Token
+【解决】https://github.com/settings/tokens 生成 PAT token
+
+【错误】"Repository already exists"
+【原因】仓库已存在
+【解决】检查你的 GitHub，删掉旧仓库或用新名字
+
+【错误】Vercel 找不到仓库
+【原因】没授权 GitHub
+【解决】https://github.com/settings/applications 检查权限
+
+【错误】"Deployment failed"
+【原因】缺少重要文件
+【解决】确保 index.html 和 map.html 都在上传的文件里
+
+
+════════════════════════════════════════════════════════════════
+
+📱 测试你的网站
+
+部署完成后，点击访问，应该看到：
+
+✅ 首页显示：
+  • 品牌 Logo 和标题
+  • 紫蓝色渐变背景
+  • 功能卡片
+  • 价格表
+
+✅ 能点击"查看地图"：
+  • 看到 33 个景点在地图上
+  • 右上角能切换地图风格
+
+✅ 响应式设计：
+  • 用手机打开也能正常显示
+  • 菜单能收起/展开
+
+
+════════════════════════════════════════════════════════════════
+
+💡 提示
+
+• 部署成功后，网址不会改变，可以固定分享
+• 修改内容后 git push，几十秒内自动更新
+• Vercel 免费计划完全够用，不需要升级
+• 网站自动有 HTTPS 加密，很安全
+• 中国也能快速访问（Vercel 有北京节点）
+
+
+════════════════════════════════════════════════════════════════
+
+📞 还有问题？
+
+详细指南：打开 "开始部署.txt" 或 "VERCEL_DEPLOY.txt"
+微信客服：17730877501
+
+
+════════════════════════════════════════════════════════════════

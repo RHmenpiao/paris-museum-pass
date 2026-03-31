@@ -1,0 +1,87 @@
+🎯 【傻瓜式一键部署指南】
+
+你好！我为你生成了一个完全自动化的部署方案。
+
+========================================
+✅ 第 1 步：快速注册 GitHub（3 分钟）
+========================================
+
+1. 打开浏览器，访问：https://github.com/signup
+
+2. 填写以下信息：
+   - Username（用户名）：随便填，比如 "yourname123"
+   - Email（邮箱）：3312566165@qq.com
+   - Password（密码）：随便填，比如 "MyPassword@123"
+   - 点 "Create account"
+
+3. GitHub 会给你的 QQ 邮箱发验证码
+   - 打开 QQ 邮箱，查看验证码
+   - 输入验证码
+   - 完成！
+
+⏱️ 耗时：3 分钟
+
+========================================
+✅ 第 2 步：创建仓库（1 分钟）
+========================================
+
+1. 登录 GitHub 后，点右上角 "+" → "New repository"
+
+2. 填写：
+   - Repository name（仓库名）：paris-museum-pass
+   - 选择 "Public"（公开）
+   - 点 "Create repository"
+
+3. 记住你的用户名和仓库名
+
+========================================
+✅ 第 3 步：上传文件（2 分钟）
+========================================
+
+GitHub 会给你一段命令。在 PowerShell 中运行这段命令：
+
+```
+git init
+git config user.email "3312566165@qq.com"
+git config user.name "【你的GitHub用户名】"
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/【你的GitHub用户名】/paris-museum-pass.git
+git push -u origin main
+```
+
+💡 记得替换 【】里的内容！
+
+========================================
+✅ 第 4 步：在 Vercel 部署（2 分钟）
+========================================
+
+1. 访问：https://vercel.com
+
+2. 点 "Sign Up" → 选 "Continue with GitHub"
+
+3. 授权 GitHub
+
+4. 点 "Add New" → "Project"
+
+5. 找到 "paris-museum-pass" → 点 "Import"
+
+6. 点 "Deploy" 按钮
+
+7. 等待 30 秒...
+
+========================================
+✅ 完成！🎉
+========================================
+
+你的网站已部署！
+
+地址：https://paris-museum-pass.vercel.app
+
+现在可以分享给客户了！
+
+========================================
+📞 有问题？
+
+微信：17730877501

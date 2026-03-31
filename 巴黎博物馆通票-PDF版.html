@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<title>巴黎博物馆通票 · 景点指南 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;background:#f8f5f0;color:#2c2c2c;width:1200px;margin:0 auto;}
+
+/* ===== COVER ===== */
+.cover{
+  width:100%;height:340px;
+  background:linear-gradient(160deg,#0f1117 0%,#1a1f35 40%,#0d1b2e 100%);
+  display:flex;align-items:center;padding:0 60px;position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,39,0.12) 0%,transparent 70%);
+}
+.cover-eiffel{position:absolute;right:60px;bottom:0;font-size:220px;opacity:0.07;line-height:1;}
+.cover-content{z-index:1;}
+.cover-tag{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  border:1px solid rgba(201,162,39,0.5);color:#c9a227;font-size:12px;
+  letter-spacing:2px;margin-bottom:14px;
+}
+.cover-title{font-size:46px;font-weight:700;color:#fff;line-height:1.15;
+  font-family:'Noto Serif SC',serif;}
+.cover-title span{color:#c9a227;}
+.cover-sub{font-size:16px;color:rgba(255,255,255,0.5);margin-top:10px;letter-spacing:1px;}
+.cover-prices{
+  margin-top:24px;display:flex;gap:16px;
+}
+.price-pill{
+  padding:8px 20px;border-radius:30px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);color:#fff;
+  font-size:14px;font-weight:500;
+}
+.price-pill span{color:#c9a227;font-weight:700;font-size:18px;}
+
+/* ===== TIPS BAR ===== */
+.tips-bar{
+  background:#1a1f35;padding:14px 60px;
+  display:flex;gap:32px;align-items:center;flex-wrap:wrap;
+}
+.tip-item{display:flex;align-items:center;gap:8px;color:#aaa;font-size:12px;}
+.tip-icon{font-size:16px;}
+.tip-item b{color:#e8e8e8;}
+
+/* ===== MAIN BODY ===== */
+.body-wrap{display:flex;gap:0;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:320px;flex-shrink:0;background:#fff;
+  border-right:1px solid #e8e0d5;padding:28px 24px;
+}
+.section-label{
+  font-size:10px;font-weight:700;color:#c9a227;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:14px;padding-bottom:6px;
+  border-bottom:2px solid #c9a227;display:inline-block;
+}
+.legend-box{margin-bottom:24px;}
+.legend-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 0;border-bottom:1px solid #f0ebe3;
+}
+.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.ld-museum{background:#3b82f6;}
+.ld-monument{background:#ef4444;}
+.ld-palace{background:#8b5cf6;}
+.ld-outside{background:#22c55e;}
+.legend-text{font-size:13px;color:#444;font-weight:500;}
+.legend-count{margin-left:auto;font-size:11px;color:#aaa;font-weight:700;}
+
+.must-do-list{margin-bottom:24px;}
+.must-do-item{
+  padding:10px 0;border-bottom:1px solid #f0ebe3;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.must-do-num{
+  width:22px;height:22px;border-radius:50%;
+  background:#c9a227;color:#fff;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.must-do-name{font-size:13px;color:#1a1a1a;font-weight:600;line-height:1.3;}
+.must-do-en{font-size:10px;color:#888;margin-top:2px;}
+.must-do-price{font-size:12px;color:#c9a227;font-weight:700;margin-top:2px;}
+
+.notice-box{
+  background:#fffbf0;border:1px solid #f0d98a;border-radius:8px;
+  padding:12px 14px;
+}
+.notice-title{font-size:12px;font-weight:700;color:#b8860b;margin-bottom:8px;}
+.notice-item{font-size:11px;color:#7a6a30;line-height:1.8;display:flex;gap:6px;}
+.notice-item::before{content:'•';color:#c9a227;}
+
+/* ===== MAP AREA ===== */
+.map-area{flex:1;background:#f8f5f0;padding:28px 28px 28px 28px;}
+.map-title{font-size:14px;font-weight:700;color:#444;margin-bottom:16px;letter-spacing:1px;}
+.map-container{
+  width:100%;aspect-ratio:4/3;
+  background:linear-gradient(145deg,#1a1f35 0%,#0d1b2e 100%);
+  border-radius:12px;overflow:hidden;position:relative;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+}
+/* SVG map placeholder with Seine river and key areas */
+.map-svg-wrap{width:100%;height:100%;position:relative;}
+
+/* ===== SITE TABLE ===== */
+.table-section{background:#fff;padding:32px 40px;}
+.table-title{font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:6px;font-family:'Noto Serif SC',serif;}
+.table-sub{font-size:13px;color:#888;margin-bottom:24px;}
+.sites-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.site-card{
+  background:#fff;border:1px solid #e8e0d5;border-radius:10px;
+  padding:14px;position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.site-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:4px;border-radius:4px 0 0 4px;
+}
+.site-card.museum::before{background:#3b82f6;}
+.site-card.monument::before{background:#ef4444;}
+.site-card.palace::before{background:#8b5cf6;}
+.site-card.outside::before{background:#22c55e;}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.card-num{font-size:11px;color:#ccc;font-weight:700;}
+.card-price{font-size:14px;font-weight:700;color:#c9a227;}
+.card-name{font-size:14px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:2px;}
+.card-en{font-size:10px;color:#aaa;margin-bottom:8px;line-height:1.4;}
+.card-notes{font-size:11px;color:#666;line-height:1.5;}
+.card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.ctag{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;}
+.ctag-reserve{background:#fef3c7;color:#92400e;}
+.ctag-top{background:#fef9ec;color:#c9a227;border:1px solid #f0d98a;}
+.ctag-closed{background:#f3f4f6;color:#9ca3af;}
+.ctag-outside{background:#f0fdf4;color:#166534;}
+
+/* ===== CATEGORY HEADERS ===== */
+.cat-header{
+  grid-column:1/-1;display:flex;align-items:center;gap:10px;
+  padding:10px 0 6px;margin-top:8px;
+}
+.cat-header-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.cat-header-text{font-size:13px;font-weight:700;color:#444;letter-spacing:1px;}
+.cat-header-line{flex:1;height:1px;background:#e8e0d5;}
+
+/* ===== FOOTER ===== */
+.page-footer{
+  background:#1a1f35;padding:20px 60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-left{color:#888;font-size:11px;line-height:1.8;}
+.footer-right{display:flex;gap:20px;}
+.footer-stat{text-align:center;}
+.footer-val{font-size:20px;font-weight:700;color:#c9a227;}
+.footer-lbl{font-size:10px;color:#666;}
+
+/* print */
+@media print{
+  body{background:#fff;width:auto;}
+  .cover,.tips-bar,.table-section,.page-footer{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-eiffel">🗼</div>
+  <div class="cover-content">
+    <div class="cover-tag">PARIS MUSEUM PASS · 2026</div>
+    <div class="cover-title">巴黎博物馆通票<br><span>景点完整指南</span></div>
+    <div class="cover-sub">50+ 博物馆 · 历史古迹 · 宫殿城堡 · 近郊景点</div>
+    <div class="cover-prices">
+      <div class="price-pill">2日券 <span>€70</span></div>
+      <div class="price-pill">4日券 <span>€90</span></div>
+      <div class="price-pill">6日券 <span>€110</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS BAR -->
+<div class="tips-bar">
+  <div class="tip-item"><span class="tip-icon">⚠️</span><span>卢浮宫、凡尔赛、圣礼拜堂等热门景点 <b>必须提前网上预约</b>时间段</span></div>
+  <div class="tip-item"><span class="tip-icon">🚧</span><span>蓬皮杜中心整修中，预计 <b>2030年</b> 重新开放</span></div>
+  <div class="tip-item"><span class="tip-icon">🗓️</span><span>通票从 <b>首次激活</b> 起按连续小时计算，注意规划天数</span></div>
+  <div class="tip-item"><span class="tip-icon">💡</span><span>价格数据来源：各景点官网，更新于 <b>2026年3月</b></span></div>
+</div>
+
+<!-- SITE TABLE -->
+<div class="table-section">
+  <div class="table-title">通票景点全览</div>
+  <div class="table-sub">共收录 33 处景点，按类别排列 · 价格为单买原价（通票持有者免费入场）</div>
+
+  <div class="sites-grid">
+
+    <!-- 博物馆 -->
+    <div class="cat-header">
+      <div class="cat-header-dot" style="background:#3b82f6;"></div>
+      <div class="cat-header-text">🏛 博物馆 Museums</div>
+      <div class="cat-header-line"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">01</span><span class="card-price">€32</span></div>
+      <div class="card-name">卢浮宫</div>
+      <div class="card-en">Musée du Louvre</div>
+      <div class="card-notes">世界最大博物馆，蒙娜丽莎、胜利女神所在地</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">02</span><span class="card-price">€16</span></div>
+      <div class="card-name">奥赛美术馆</div>
+      <div class="card-en">Musée d'Orsay</div>
+      <div class="card-notes">印象派艺术圣殿，莫奈、梵高、雷诺阿</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">03</span><span class="card-price">€12.5</span></div>
+      <div class="card-name">橘园美术馆</div>
+      <div class="card-en">Musée de l'Orangerie</div>
+      <div class="card-notes">莫奈睡莲系列巨幅全景画</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">04</span><span class="card-price">€14</span></div>
+      <div class="card-name">罗丹美术馆</div>
+      <div class="card-en">Musée Rodin</div>
+      <div class="card-notes">《思想者》雕塑原件所在地</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">05</span><span class="card-price">€16</span></div>
+      <div class="card-name">毕加索博物馆</div>
+      <div class="card-en">Musée Picasso</div>
+      <div class="card-notes">毕加索作品个人最大收藏</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">06</span><span class="card-price">€15</span></div>
+      <div class="card-name">军事博物馆·荣军院</div>
+      <div class="card-en">Musée de l'Armée</div>
+      <div class="card-notes">法国军事历史，含拿破仑盔甲与文物</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">07</span><span class="card-price">€15</span></div>
+      <div class="card-name">蓬皮杜中心</div>
+      <div class="card-en">Centre Pompidou</div>
+      <div class="card-notes">现代艺术博物馆，现代与当代艺术名作</div>
+      <div class="card-tags"><span class="ctag ctag-closed">🚧 整修至2030</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">08</span><span class="card-price">€13</span></div>
+      <div class="card-name">吉美博物馆</div>
+      <div class="card-en">Musée Guimet</div>
+      <div class="card-notes">欧洲最大亚洲艺术博物馆</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">09</span><span class="card-price">€14</span></div>
+      <div class="card-name">布朗利河岸博物馆</div>
+      <div class="card-en">Musée du quai Branly</div>
+      <div class="card-notes">非洲、亚洲、大洋洲土著艺术收藏</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">10</span><span class="card-price">€12</span></div>
+      <div class="card-name">克吕尼博物馆</div>
+      <div class="card-en">Musée de Cluny</div>
+      <div class="card-notes">国立中世纪博物馆，《独角兽与贵妇》挂毯</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">11</span><span class="card-price">€15</span></div>
+      <div class="card-name">装饰艺术博物馆</div>
+      <div class="card-en">Musée des Arts Décoratifs</div>
+      <div class="card-notes">时尚与装饰艺术，珠宝、家具精品</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">12</span><span class="card-price">€12</span></div>
+      <div class="card-name">犹太艺术与历史博物馆</div>
+      <div class="card-en">Musée d'Art et d'Histoire du Judaïsme</div>
+      <div class="card-notes">犹太文化、历史与艺术收藏</div>
+      <div class="card-tags"><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">13</span><span class="card-price">€12</span></div>
+      <div class="card-name">工艺美术博物馆</div>
+      <div class="card-en">Musée des Arts et Métiers</div>
+      <div class="card-notes">技术与工业遗产，傅科摆原址</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">14</span><span class="card-price">€9</span></div>
+      <div class="card-name">德拉克罗瓦博物馆</div>
+      <div class="card-en">Musée Delacroix</div>
+      <div class="card-notes">浪漫主义大师德拉克罗瓦故居与画室</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">15</span><span class="card-price">€10</span></div>
+      <div class="card-name">阿拉伯世界研究所</div>
+      <div class="card-en">Institut du Monde Arabe</div>
+      <div class="card-notes">阿拉伯文化、艺术、科学展览</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">16</span><span class="card-price">€8</span></div>
+      <div class="card-name">古斯塔夫·莫罗博物馆</div>
+      <div class="card-en">Musée Gustave Moreau</div>
+      <div class="card-notes">象征主义画家莫罗故居，藏8000余件作品</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">17</span><span class="card-price">€9</span></div>
+      <div class="card-name">国家移民历史博物馆</div>
+      <div class="card-en">Musée de l'Immigration</div>
+      <div class="card-notes">金色大门宫，移民历史与文化</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">18</span><span class="card-price">€9</span></div>
+      <div class="card-name">巴黎下水道博物馆</div>
+      <div class="card-en">Musée des Égouts</div>
+      <div class="card-notes">雨果《悲惨世界》取材地，城市地下历史</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card museum">
+      <div class="card-header"><span class="card-num">19</span><span class="card-price">€12</span></div>
+      <div class="card-name">发现宫</div>
+      <div class="card-en">Palais de la Découverte</div>
+      <div class="card-notes">科学探索互动博物馆，天文馆</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <!-- 历史古迹 -->
+    <div class="cat-header">
+      <div class="cat-header-dot" style="background:#ef4444;"></div>
+      <div class="cat-header-text">🏛 历史古迹 Monuments</div>
+      <div class="cat-header-line"></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">20</span><span class="card-price">€13</span></div>
+      <div class="card-name">凯旋门</div>
+      <div class="card-en">Arc de Triomphe</div>
+      <div class="card-notes">香榭丽舍大道顶端，登顶俯瞰巴黎全景</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">21</span><span class="card-price">€13</span></div>
+      <div class="card-name">先贤祠</div>
+      <div class="card-en">Panthéon</div>
+      <div class="card-notes">伏尔泰、卢梭、居里夫人长眠地</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">22</span><span class="card-price">€13</span></div>
+      <div class="card-name">圣礼拜堂</div>
+      <div class="card-en">Sainte-Chapelle</div>
+      <div class="card-notes">哥特式彩绘玻璃窗极品，西岱岛核心</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">23</span><span class="card-price">€13</span></div>
+      <div class="card-name">巴黎古监狱</div>
+      <div class="card-en">Conciergerie</div>
+      <div class="card-notes">玛丽·安托瓦内特曾被关押处</div>
+      <div class="card-tags"><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">24</span><span class="card-price">€15</span></div>
+      <div class="card-name">荣军院圆顶教堂</div>
+      <div class="card-en">Dôme des Invalides</div>
+      <div class="card-notes">金色圆顶，拿破仑一世墓（含在军事博物馆票内）</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">25</span><span class="card-price">€17</span></div>
+      <div class="card-name">海军府</div>
+      <div class="card-en">Hôtel de la Marine</div>
+      <div class="card-notes">协和广场旁，18世纪皇家宫殿内部</div>
+      <div class="card-tags"><span class="ctag ctag-reserve">⚠️ 需预约</span></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">26</span><span class="card-price">€9</span></div>
+      <div class="card-name">圣德尼圣殿</div>
+      <div class="card-en">Basilique Saint-Denis</div>
+      <div class="card-notes">法国历代国王陵寝，哥特建筑发源地</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <div class="site-card monument">
+      <div class="card-header"><span class="card-num">27</span><span class="card-price">€9</span></div>
+      <div class="card-name">西岱岛考古墓穴</div>
+      <div class="card-en">Crypte Archéologique</div>
+      <div class="card-notes">巴黎历史地下遗址，2000年城市层积</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <!-- 宫殿城堡 -->
+    <div class="cat-header">
+      <div class="cat-header-dot" style="background:#8b5cf6;"></div>
+      <div class="cat-header-text">🏰 宫殿城堡 Palaces &amp; Châteaux</div>
+      <div class="cat-header-line"></div>
+    </div>
+
+    <div class="site-card palace">
+      <div class="card-header"><span class="card-num">28</span><span class="card-price">€21</span></div>
+      <div class="card-name">文森城堡</div>
+      <div class="card-en">Château de Vincennes</div>
+      <div class="card-notes">14世纪中世纪皇家城堡，有护城河，巴黎近郊</div>
+      <div class="card-tags"></div>
+    </div>
+
+    <!-- 近郊景点 -->
+    <div class="cat-header">
+      <div class="cat-header-dot" style="background:#22c55e;"></div>
+      <div class="cat-header-text">🚆 巴黎近郊 Day Trips</div>
+      <div class="cat-header-line"></div>
+    </div>
+
+    <div class="site-card outside">
+      <div class="card-header"><span class="card-num">29</span><span class="card-price">€21</span></div>
+      <div class="card-name">凡尔赛宫</div>
+      <div class="card-en">Château de Versailles</div>
+      <div class="card-notes">太阳王路易十四行宫，镜厅·世界遗产（RER C 约40分钟）</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span><span class="ctag ctag-reserve">⚠️ 需预约</span><span class="ctag ctag-outside">🚆 近郊</span></div>
+    </div>
+
+    <div class="site-card outside">
+      <div class="card-header"><span class="card-num">30</span><span class="card-price">€14</span></div>
+      <div class="card-name">枫丹白露宫</div>
+      <div class="card-en">Château de Fontainebleau</div>
+      <div class="card-notes">法国历代国王猎宫，列入世界遗产（火车约40分钟）</div>
+      <div class="card-tags"><span class="ctag ctag-top">⭐ 必去</span><span class="ctag ctag-outside">🚆 近郊</span></div>
+    </div>
+
+    <div class="site-card outside">
+      <div class="card-header"><span class="card-num">31</span><span class="card-price">€18</span></div>
+      <div class="card-name">孔代博物馆·尚蒂伊城堡</div>
+      <div class="card-en">Château de Chantilly</div>
+      <div class="card-notes">法国最美城堡之一，孔代亲王收藏（火车约25分钟）</div>
+      <div class="card-tags"><span class="ctag ctag-outside">🚆 近郊</span></div>
+    </div>
+
+    <div class="site-card outside">
+      <div class="card-header"><span class="card-num">32</span><span class="card-price">€10</span></div>
+      <div class="card-name">贡比涅宫</div>
+      <div class="card-en">Palais de Compiègne</div>
+      <div class="card-notes">帝国时代皇宫，拿破仑三世居所（火车约1小时）</div>
+      <div class="card-tags"><span class="ctag ctag-outside">🚆 近郊</span></div>
+    </div>
+
+    <div class="site-card outside">
+      <div class="card-header"><span class="card-num">33</span><span class="card-price">€9</span></div>
+      <div class="card-name">马尔迈松城堡</div>
+      <div class="card-en">Château de Malmaison</div>
+      <div class="card-notes">约瑟芬皇后官邸，帝国时期家具陈设（RER A约30分钟）</div>
+      <div class="card-tags"><span class="ctag ctag-outside">🚆 近郊</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-left">
+    巴黎博物馆通票 Paris Museum Pass · 官网：parismuseumpass.fr<br>
+    价格数据来源：各景点官方网站，更新于 2026年3月 · 实际价格以官网为准<br>
+    <span style="color:#666;">❌ 通票不含：埃菲尔铁塔 · 塞纳河游船 · 巴黎迪士尼</span>
+  </div>
+  <div class="footer-right">
+    <div class="footer-stat"><div class="footer-val">33</div><div class="footer-lbl">景点数量</div></div>
+    <div class="footer-stat"><div class="footer-val">€70</div><div class="footer-lbl">起步价格</div></div>
+    <div class="footer-stat"><div class="footer-val">2/4/6</div><div class="footer-lbl">天数选择</div></div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>巴黎博物馆通票 · 景点地图</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #0f1117;
+      color: #e8e8e8;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .logo {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #c9a227, #e8c56a);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    header h1 {
+      font-size: 18px; font-weight: 700;
+      background: linear-gradient(135deg, #c9a227, #f0d98a);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+    header p { font-size: 12px; color: #8a8f9c; margin-top: 2px; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: #161b27;
+      padding: 10px 24px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .filter-label { font-size: 12px; color: #666; margin-right: 4px; }
+    .filter-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent;
+      color: #aaa;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .filter-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+    .filter-btn.active {
+      color: #fff;
+      border-color: transparent;
+    }
+    .filter-btn .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .filter-btn[data-cat="all"].active { background: linear-gradient(135deg,#c9a227,#e8c56a); color:#000; }
+    .filter-btn[data-cat="museum"].active { background: #4a9eff; border-color:#4a9eff; }
+    .filter-btn[data-cat="monument"].active { background: #ff6b6b; border-color:#ff6b6b; }
+    .filter-btn[data-cat="palace"].active { background: #a855f7; border-color:#a855f7; }
+    .filter-btn[data-cat="outside"].active { background: #22c55e; border-color:#22c55e; }
+
+    .divider { width:1px; height:20px; background: rgba(255,255,255,0.1); }
+
+    .reserve-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid #ff6b6b44;
+      background: transparent;
+      color: #ff9999;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .reserve-btn:hover { background:#ff6b6b22; }
+    .reserve-btn.active { background:#ff6b6b; color:#fff; border-color:#ff6b6b; }
+
+    /* ── Main layout ── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 300px;
+      background: #161b27;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-header h3 { font-size: 13px; color:#aaa; letter-spacing:1px; text-transform:uppercase; }
+    .attraction-count { font-size:22px; font-weight:700; color:#fff; margin-top:4px; }
+    .attraction-count span { font-size:13px; font-weight:400; color:#666; }
+
+    .list-wrap {
+      overflow-y: auto;
+      flex: 1;
+      padding: 8px 0;
+    }
+    .list-wrap::-webkit-scrollbar { width:4px; }
+    .list-wrap::-webkit-scrollbar-track { background:transparent; }
+    .list-wrap::-webkit-scrollbar-thumb { background:#333; border-radius:2px; }
+
+    .site-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .site-item:hover { background: rgba(255,255,255,0.04); }
+    .site-item.active {
+      background: rgba(255,255,255,0.07);
+    }
+    .site-item.hidden { display: none; }
+
+    .site-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .site-info { flex: 1; min-width: 0; }
+    .site-name { font-size: 13px; font-weight: 600; color: #e0e0e0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .site-name-en { font-size: 11px; color: #666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+    .site-tags { display:flex; gap:4px; margin-top:4px; flex-wrap:wrap; }
+    .tag {
+      padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight:600;
+    }
+    .tag-reserve { background: #ff6b6b22; color: #ff9999; border:1px solid #ff6b6b33; }
+    .tag-outside { background: #22c55e22; color: #86efac; border:1px solid #22c55e33; }
+    .tag-top { background: #c9a22722; color: #f0d98a; border:1px solid #c9a22733; }
+    .tag-closed { background: #66666622; color: #888; border:1px solid #66666633; }
+
+    .cat-label {
+      padding: 10px 16px 4px;
+      font-size: 10px; font-weight: 700; color: #555; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .cat-label.hidden { display:none; }
+
+    /* ── Map ── */
+    #map {
+      flex: 1;
+      position: relative;
+    }
+
+    /* Leaflet custom overrides */
+    .leaflet-container { background: #1a1f2e; }
+    .leaflet-control-attribution { display: none; }
+    .leaflet-control-zoom a {
+      background: #1e2537 !important;
+      color: #ccc !important;
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+    .leaflet-control-zoom a:hover { background: #2a3147 !important; color: #fff !important; }
+
+    /* Custom marker */
+    .custom-marker {
+      width: 32px; height: 32px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,255,255,0.3);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .custom-marker .icon {
+      transform: rotate(45deg);
+      font-size: 14px;
+      line-height: 1;
+    }
+    .custom-marker.museum-marker { background: linear-gradient(135deg,#2563eb,#4a9eff); }
+    .custom-marker.monument-marker { background: linear-gradient(135deg,#dc2626,#ff6b6b); }
+    .custom-marker.palace-marker { background: linear-gradient(135deg,#7c3aed,#a855f7); }
+    .custom-marker.outside-marker { background: linear-gradient(135deg,#16a34a,#22c55e); }
+
+    /* Large marker for focus */
+    .custom-marker.focused {
+      width: 40px; height: 40px;
+      box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+    }
+    .custom-marker.focused .icon { font-size: 17px; }
+
+    /* Popup */
+    .leaflet-popup-content-wrapper {
+      background: #1e2537;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      padding: 0;
+    }
+    .leaflet-popup-tip { background: #1e2537; }
+    .leaflet-popup-close-button { color: #666 !important; right: 10px !important; top: 10px !important; font-size: 16px !important; }
+    .leaflet-popup-close-button:hover { color: #fff !important; }
+    .leaflet-popup-content { margin: 0 !important; }
+
+    .popup-inner { padding: 16px 18px; min-width: 220px; max-width: 280px; }
+    .popup-cat {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight:600; margin-bottom: 10px;
+    }
+    .popup-cat.museum { background: #4a9eff22; color:#4a9eff; }
+    .popup-cat.monument { background: #ff6b6b22; color:#ff6b6b; }
+    .popup-cat.palace { background: #a855f722; color:#a855f7; }
+    .popup-cat.outside { background: #22c55e22; color:#22c55e; }
+
+    .popup-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .popup-en { font-size: 11px; color: #666; margin-top: 2px; }
+    .popup-price {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      font-size: 12px; color: #aaa;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .popup-price .price-val { font-size: 14px; font-weight: 700; color: #c9a227; }
+    .popup-notes { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .popup-note {
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    }
+    .popup-note.reserve { background: #ff6b6b22; color: #ff9999; }
+    .popup-note.top { background: #c9a22722; color: #f0d98a; }
+    .popup-note.closed { background: #44444422; color: #888; }
+    .popup-note.outside-paris { background: #22c55e22; color: #86efac; }
+
+    /* Legend */
+    .legend {
+      position: absolute;
+      bottom: 20px; right: 16px;
+      background: rgba(22,27,39,0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      z-index: 500;
+      min-width: 150px;
+    }
+    .legend h4 { font-size: 11px; color:#666; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+    .legend-item { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12px; color:#bbb; }
+    .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .legend-dot.museum { background:#4a9eff; }
+    .legend-dot.monument { background:#ff6b6b; }
+    .legend-dot.palace { background:#a855f7; }
+    .legend-dot.outside { background:#22c55e; }
+
+    /* Stats bar */
+    .stats-bar {
+      position: absolute;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(22,27,39,0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 6px 20px;
+      z-index: 500;
+      display: flex; gap: 20px;
+    }
+    .stat { text-align: center; }
+    .stat-val { font-size: 16px; font-weight: 700; color: #c9a227; }
+    .stat-lbl { font-size: 10px; color: #666; }
+
+    /* Responsive */
+    @media(max-width:700px){
+      .sidebar { display:none; }
+      header h1 { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🗺️</div>
+  <div>
+    <h1>巴黎博物馆通票 · 景点地图</h1>
+    <p>Paris Museum Pass · 互动景点分布图 · 2026</p>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">分类筛选</span>
+  <button class="filter-btn active" data-cat="all"><span class="dot" style="background:#c9a227"></span>全部</button>
+  <button class="filter-btn" data-cat="museum"><span class="dot" style="background:#4a9eff"></span>博物馆</button>
+  <button class="filter-btn" data-cat="monument"><span class="dot" style="background:#ff6b6b"></span>历史古迹</button>
+  <button class="filter-btn" data-cat="palace"><span class="dot" style="background:#a855f7"></span>宫殿城堡</button>
+  <button class="filter-btn" data-cat="outside"><span class="dot" style="background:#22c55e"></span>巴黎近郊</button>
+  <div class="divider"></div>
+  <button class="reserve-btn" id="reserveToggle">⚠️ 仅显示需预约</button>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>景点列表</h3>
+      <div class="attraction-count"><span id="visibleCount">32</span> <span>处景点</span></div>
+    </div>
+    <div class="list-wrap" id="siteList"></div>
+  </div>
+
+  <div id="map">
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-val">32+</div><div class="stat-lbl">通票景点</div></div>
+      <div class="stat"><div class="stat-val">2/4/6</div><div class="stat-lbl">天数选择</div></div>
+      <div class="stat"><div class="stat-val">€70起</div><div class="stat-lbl">通票价格</div></div>
+    </div>
+    <div class="legend">
+      <h4>图例</h4>
+      <div class="legend-item"><div class="legend-dot museum"></div>博物馆</div>
+      <div class="legend-item"><div class="legend-dot monument"></div>历史古迹</div>
+      <div class="legend-item"><div class="legend-dot palace"></div>宫殿城堡</div>
+      <div class="legend-item"><div class="legend-dot outside"></div>巴黎近郊</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 景点数据 ──
+const sites = [
+  // 博物馆
+  { id:1, name:"卢浮宫", en:"Musée du Louvre", cat:"museum", lat:48.8606, lng:2.3376, price:22, reserve:true, top:true, notes:"世界最大博物馆，蒙娜丽莎所在地" },
+  { id:2, name:"奥赛美术馆", en:"Musée d'Orsay", cat:"museum", lat:48.8600, lng:2.3266, price:16, reserve:false, top:true, notes:"印象派艺术圣殿，莫奈、梵高" },
+  { id:3, name:"橘园美术馆", en:"Musée de l'Orangerie", cat:"museum", lat:48.8638, lng:2.3222, price:12.5, reserve:true, top:true, notes:"莫奈睡莲系列巨幅画" },
+  { id:4, name:"罗丹美术馆", en:"Musée Rodin", cat:"museum", lat:48.8554, lng:2.3158, price:14, reserve:false, top:true, notes:"思想者雕塑原件所在地" },
+  { id:5, name:"毕加索博物馆", en:"Musée Picasso", cat:"museum", lat:48.8596, lng:2.3627, price:14, reserve:false, top:true, notes:"毕加索个人最大收藏" },
+  { id:6, name:"克吕尼博物馆", en:"Musée de Cluny", cat:"museum", lat:48.8509, lng:2.3441, price:12, reserve:false, top:false, notes:"国立中世纪博物馆" },
+  { id:7, name:"军事博物馆·荣军院", en:"Musée de l'Armée", cat:"museum", lat:48.8553, lng:2.3125, price:15, reserve:false, top:true, notes:"含拿破仑墓·荣军院圆顶" },
+  { id:8, name:"蓬皮杜中心", en:"Centre Pompidou", cat:"museum", lat:48.8606, lng:2.3522, price:15, reserve:false, top:true, closed:true, notes:"⚠️ 整修中，预计2030年重开" },
+  { id:9, name:"吉美博物馆", en:"Musée Guimet", cat:"museum", lat:48.8654, lng:2.2959, price:13, reserve:false, top:false, notes:"亚洲艺术博物馆" },
+  { id:10, name:"布朗利河岸博物馆", en:"Musée du quai Branly", cat:"museum", lat:48.8604, lng:2.2974, price:14, reserve:false, top:false, notes:"非欧土著艺术收藏" },
+  { id:11, name:"装饰艺术博物馆", en:"Musée des Arts Décoratifs", cat:"museum", lat:48.8636, lng:2.3350, price:15, reserve:false, top:false, notes:"时尚与装饰艺术" },
+  { id:12, name:"犹太艺术与历史博物馆", en:"Musée d'Art et d'Histoire du Judaïsme", cat:"museum", lat:48.8608, lng:2.3541, price:10, reserve:true, top:false, notes:"犹太文化历史收藏" },
+  { id:13, name:"工艺美术博物馆", en:"Musée des Arts et Métiers", cat:"museum", lat:48.8662, lng:2.3553, price:12, reserve:false, top:false, notes:"技术与工业遗产" },
+  { id:14, name:"德拉克罗瓦博物馆", en:"Musée Delacroix", cat:"museum", lat:48.8540, lng:2.3342, price:9, reserve:false, top:false, notes:"浪漫主义大师故居" },
+  { id:15, name:"阿拉伯世界研究所", en:"Institut du Monde Arabe", cat:"museum", lat:48.8512, lng:2.3554, price:8, reserve:false, top:false, notes:"阿拉伯文化艺术展览" },
+  { id:16, name:"古斯塔夫·莫罗博物馆", en:"Musée Gustave Moreau", cat:"museum", lat:48.8782, lng:2.3309, price:7, reserve:false, top:false, notes:"象征主义画家故居" },
+  { id:17, name:"国家移民历史博物馆", en:"Musée de l'Immigration", cat:"museum", lat:48.8352, lng:2.4001, price:8, reserve:false, top:false, notes:"金色大门宫，移民历史" },
+  { id:18, name:"巴黎下水道博物馆", en:"Musée des Égouts", cat:"museum", lat:48.8633, lng:2.3058, price:8, reserve:false, top:false, notes:"维克多雨果《悲惨世界》实地" },
+  { id:19, name:"发现宫", en:"Palais de la Découverte", cat:"museum", lat:48.8663, lng:2.3133, price:12, reserve:false, top:false, notes:"科学探索互动博物馆" },
+  // 历史古迹
+  { id:20, name:"凯旋门", en:"Arc de Triomphe", cat:"monument", lat:48.8738, lng:2.2950, price:16, reserve:false, top:true, notes:"香榭丽舍顶端，俯瞰巴黎全景" },
+  { id:21, name:"先贤祠", en:"Panthéon", cat:"monument", lat:48.8462, lng:2.3461, price:13, reserve:false, top:true, notes:"伏尔泰、卢梭、居里夫人长眠地" },
+  { id:22, name:"圣礼拜堂", en:"Sainte-Chapelle", cat:"monument", lat:48.8554, lng:2.3450, price:13, reserve:true, top:true, notes:"哥特式彩绘玻璃窗极品" },
+  { id:23, name:"巴黎古监狱", en:"Conciergerie", cat:"monument", lat:48.8556, lng:2.3464, price:13, reserve:true, top:false, notes:"玛丽安托瓦内特曾被关押处" },
+  { id:24, name:"荣军院圆顶教堂", en:"Dôme des Invalides", cat:"monument", lat:48.8549, lng:2.3122, price:0, reserve:false, top:true, notes:"含在军事博物馆票内，拿破仑之墓" },
+  { id:25, name:"海军府", en:"Hôtel de la Marine", cat:"monument", lat:48.8655, lng:2.3214, price:17, reserve:true, top:false, notes:"协和广场旁，18世纪宫殿内部" },
+  { id:26, name:"圣德尼圣殿", en:"Basilique Saint-Denis", cat:"monument", lat:48.9354, lng:2.3583, price:8, reserve:false, top:false, notes:"法国历代国王陵寝" },
+  { id:27, name:"西岱岛考古地下墓穴", en:"Crypte Archéologique", cat:"monument", lat:48.8531, lng:2.3486, price:9, reserve:false, top:false, notes:"巴黎历史地下遗址" },
+  // 宫殿城堡（巴黎近郊）
+  { id:28, name:"凡尔赛宫", en:"Château de Versailles", cat:"palace", lat:48.8049, lng:2.1204, price:21, reserve:true, top:true, outside:true, notes:"太阳王路易十四行宫，镜厅" },
+  { id:29, name:"枫丹白露宫", en:"Château de Fontainebleau", cat:"palace", lat:48.4025, lng:2.7016, price:14, reserve:false, top:true, outside:true, notes:"法国历代国王猎宫，列入世界遗产" },
+  { id:30, name:"文森城堡", en:"Château de Vincennes", cat:"palace", lat:48.8441, lng:2.4354, price:11, reserve:false, top:false, outside:false, notes:"中世纪皇家城堡，有护城河" },
+  { id:31, name:"孔代博物馆·尚蒂伊城堡", en:"Château de Chantilly", cat:"palace", lat:49.1937, lng:2.4842, price:18, reserve:false, top:false, outside:true, notes:"法国最美城堡之一，世界遗产" },
+  { id:32, name:"贡比涅宫", en:"Palais de Compiègne", cat:"palace", lat:49.4160, lng:2.8283, price:10, reserve:false, top:false, outside:true, notes:"帝国时代皇宫，拿破仑三世居所" },
+  { id:33, name:"马尔迈松城堡", en:"Château de Malmaison", cat:"palace", lat:48.8723, lng:2.1606, price:9, reserve:false, top:false, outside:true, notes:"约瑟芬皇后官邸，帝国时期家具" },
+];
+
+// ── 颜色配置 ──
+const catColors = {
+  museum: '#4a9eff',
+  monument: '#ff6b6b',
+  palace: '#a855f7',
+  outside: '#22c55e'
+};
+const catIcons = { museum:'🏛', monument:'🏛', palace:'🏰', outside:'🌿' };
+const catNames = { museum:'博物馆', monument:'历史古迹', palace:'宫殿城堡', outside:'近郊景点' };
+
+// ── 初始化地图 ──
+const map = L.map('map', {
+  center: [48.860, 2.347],
+  zoom: 13,
+  zoomControl: true,
+});
+
+// 使用 CartoDB 暗色地图底图
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap contributors © CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// ── 创建标记 ──
+const markers = {};
+const markerLayers = { museum:[], monument:[], palace:[], outside:[] };
+
+function getCat(site) {
+  if (site.outside) return 'outside';
+  return site.cat;
+}
+
+function createMarkerIcon(site, focused=false) {
+  const cat = getCat(site);
+  const color = catColors[cat];
+  const ico = catIcons[cat] || '📍';
+  const size = focused ? 40 : 32;
+  return L.divIcon({
+    className: '',
+    html: `<div class="custom-marker ${cat}-marker${focused?' focused':''}" style="width:${size}px;height:${size}px;">
+             <span class="icon">${ico}</span>
+           </div>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size],
+    popupAnchor: [0, -size]
+  });
+}
+
+function buildPopup(site) {
+  const cat = getCat(site);
+  const catLabel = catNames[cat] || '';
+  const priceStr = site.price > 0 ? `€${site.price}` : '含在套票内';
+  let notesHtml = '';
+  if (site.top) notesHtml += `<span class="popup-note top">⭐ 必去</span>`;
+  if (site.reserve) notesHtml += `<span class="popup-note reserve">⚠️ 需预约</span>`;
+  if (site.closed) notesHtml += `<span class="popup-note closed">🚧 暂停开放</span>`;
+  if (site.outside) notesHtml += `<span class="popup-note outside-paris">🚆 近郊</span>`;
+  return `<div class="popup-inner">
+    <div class="popup-cat ${cat}">● ${catLabel}</div>
+    <div class="popup-name">${site.name}</div>
+    <div class="popup-en">${site.en}</div>
+    <div class="popup-price">
+      <span>通票节省（原价）</span>
+      <span class="price-val">${priceStr}</span>
+    </div>
+    ${notesHtml ? `<div class="popup-notes">${notesHtml}</div>` : ''}
+    <div style="margin-top:8px;font-size:11px;color:#777;line-height:1.5;">${site.notes}</div>
+  </div>`;
+}
+
+sites.forEach(site => {
+  const cat = getCat(site);
+  const marker = L.marker([site.lat, site.lng], {
+    icon: createMarkerIcon(site),
+    title: site.name
+  }).addTo(map);
+
+  marker.bindPopup(buildPopup(site), { maxWidth: 300, minWidth: 240 });
+
+  marker.on('click', () => {
+    highlightItem(site.id);
+  });
+
+  markers[site.id] = { marker, site, cat, visible: true };
+  markerLayers[cat === 'outside' ? 'outside' : site.cat].push(marker);
+});
+
+// ── 建立侧边栏列表 ──
+const siteList = document.getElementById('siteList');
+
+function buildList() {
+  siteList.innerHTML = '';
+  const groups = [
+    { key:'museum', label:'博物馆' },
+    { key:'monument', label:'历史古迹' },
+    { key:'palace', label:'宫殿城堡' },
+    { key:'outside', label:'巴黎近郊' },
+  ];
+  groups.forEach(g => {
+    const items = sites.filter(s => getCat(s) === g.key);
+    const lblEl = document.createElement('div');
+    lblEl.className = 'cat-label';
+    lblEl.id = `lbl-${g.key}`;
+    lblEl.textContent = g.label;
+    siteList.appendChild(lblEl);
+    items.forEach(site => {
+      const el = document.createElement('div');
+      el.className = 'site-item';
+      el.id = `item-${site.id}`;
+      el.style.borderLeftColor = catColors[g.key];
+      let tags = '';
+      if (site.top) tags += `<span class="tag tag-top">⭐必去</span>`;
+      if (site.reserve) tags += `<span class="tag tag-reserve">⚠️预约</span>`;
+      if (site.closed) tags += `<span class="tag tag-closed">🚧暂停</span>`;
+      if (site.outside) tags += `<span class="tag tag-outside">🚆近郊</span>`;
+      el.innerHTML = `
+        <div class="site-dot" style="background:${catColors[g.key]}"></div>
+        <div class="site-info">
+          <div class="site-name">${site.name}</div>
+          <div class="site-name-en">${site.en}</div>
+          ${tags ? `<div class="site-tags">${tags}</div>` : ''}
+        </div>`;
+      el.addEventListener('click', () => {
+        map.setView([site.lat, site.lng], 15, { animate: true });
+        markers[site.id].marker.openPopup();
+        highlightItem(site.id);
+      });
+      siteList.appendChild(el);
+    });
+  });
+}
+
+buildList();
+
+function highlightItem(id) {
+  document.querySelectorAll('.site-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById(`item-${id}`);
+  if (el) { el.classList.add('active'); el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+}
+
+// ── 筛选逻辑 ──
+let currentCat = 'all';
+let showReserveOnly = false;
+
+function applyFilters() {
+  let visible = 0;
+  sites.forEach(site => {
+    const cat = getCat(site);
+    const { marker } = markers[site.id];
+    const catMatch = currentCat === 'all' || cat === currentCat;
+    const reserveMatch = !showReserveOnly || site.reserve;
+    const show = catMatch && reserveMatch;
+    markers[site.id].visible = show;
+    if (show) { if (!map.hasLayer(marker)) marker.addTo(map); visible++; }
+    else { if (map.hasLayer(marker)) map.removeLayer(marker); }
+    const itemEl = document.getElementById(`item-${site.id}`);
+    if (itemEl) itemEl.classList.toggle('hidden', !show);
+  });
+
+  // Hide empty category labels
+  ['museum','monument','palace','outside'].forEach(cat => {
+    const lbl = document.getElementById(`lbl-${cat}`);
+    if (lbl) {
+      const hasVisible = sites.filter(s => getCat(s) === cat).some(s => markers[s.id].visible);
+      lbl.classList.toggle('hidden', !hasVisible);
+    }
+  });
+
+  document.getElementById('visibleCount').textContent = visible;
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    applyFilters();
+  });
+});
+
+// Reserve toggle
+document.getElementById('reserveToggle').addEventListener('click', function() {
+  showReserveOnly = !showReserveOnly;
+  this.classList.toggle('active', showReserveOnly);
+  applyFilters();
+});
+
+// ── 视图自适应按钮 ──
+const fitBtn = L.control({ position: 'topright' });
+fitBtn.onAdd = function() {
+  const div = document.createElement('div');
+  div.className = 'leaflet-bar';
+  div.innerHTML = `<a href="#" title="适应视图" style="font-size:16px;line-height:26px;">⊞</a>`;
+  div.onclick = (e) => {
+    e.preventDefault();
+    const bounds = L.latLngBounds(sites.filter(s => markers[s.id].visible).map(s => [s.lat, s.lng]));
+    if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] });
+  };
+  return div;
+};
+fitBtn.addTo(map);
+</script>
+</body>
+</html>

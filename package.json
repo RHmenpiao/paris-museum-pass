@@ -1,0 +1,19 @@
+{
+  "name": "paris-museum-pass",
+  "version": "1.0.0",
+  "description": "巴黎博物馆通票景点位置导览地图 - 瑞禾旅游",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Open index.html in browser'",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": [
+    "Paris",
+    "Museum Pass",
+    "Travel",
+    "Map",
+    "Guide"
+  ],
+  "author": "瑞禾旅游",
+  "license": "MIT"
+}
