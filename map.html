@@ -841,6 +841,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .stat { text-align: center; }
     .stat-val { font-size: 16px; font-weight: 700; color: #c9a227; }
     .stat-lbl { font-size: 10px; color: #666; }
+    /* 推荐路线相关样式 */
+    .route-group { margin-bottom: 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .route-group-title { font-size: 11px; font-weight: 700; color: #c9a227; padding: 10px 16px 8px; background: rgba(255,255,255,0.02); text-transform: uppercase; letter-spacing: 0.5px; }
+    .route-item { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); background: transparent; border: none; cursor: pointer; transition: all .2s; font-size: 11px; color: #bbb; }
+    .route-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .route-item.active { background: linear-gradient(90deg,rgba(102,126,234,0.15),transparent); border-left: 3px solid #667eea; padding-left: 13px; color: #fff; }
+    .route-name { font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .route-desc { font-size: 10px; color: #999; line-height: 1.4; margin-bottom: 4px; }
+    .route-day { font-size: 9px; color: #888; line-height: 1.3; font-style: italic; }
     @media(max-width:700px){ .sidebar { display:none; } header h1 { font-size: 15px; } }
   </style>
 </head>
@@ -873,10 +882,13 @@ svg.leaflet-image-layer.leaflet-interactive path {
 <div class="main">
   <div class="sidebar">
     <div class="sidebar-header">
-      <h3>景点列表</h3>
+      <h3>🗺️ 巴黎景点导览</h3>
       <div class="attraction-count"><span id="visibleCount">33</span> <span>处景点</span></div>
     </div>
-    <div class="list-wrap" id="siteList"></div>
+    <div class="list-wrap">
+      <div id="siteList"></div>
+      <div id="routesContainer" style="border-top:2px solid rgba(102,126,234,0.3);"></div>
+    </div>
   </div>
   <div id="map">
     <div class="stats-bar">
@@ -905,7 +917,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 <script>
 const sites=[
   // 价格来源：各景点官网及2026年3月最新数据
-  {id:1,name:"卢浮宫",en:"Musée du Louvre",cat:"museum",lat:48.8606,lng:2.3376,price:32,reserve:true,top:true,notes:"世界最大博物馆，蒙娜丽莎、胜利女神所在地"},
+  {id:1,name:"卢浮宫",en:"Musée du Louvre",cat:"museum",lat:48.8606,lng:2.3376,price:32,reserve:true,top:true,notes:"世界最大博物馆，蒙娜丽莎、胜利女神所在地",entrances:[{name:"🔷 金字塔入口",desc:"正面主入口，人流最大",crowd:"繁忙"},{name:"🔵 狮子门入口",desc:"北侧入口，人流较少",crowd:"适中"},{name:"🟢 卡鲁塞尔入口",desc:"地下商城连接，人流较少",crowd:"较少"},{name:"🟠 黎塞留门入口",desc:"东侧入口，专业购票者",crowd:"较少"}]},
   {id:2,name:"奥赛美术馆",en:"Musée d'Orsay",cat:"museum",lat:48.8600,lng:2.3266,price:16,reserve:false,top:true,notes:"印象派艺术圣殿，莫奈、梵高、雷诺阿"},
   {id:3,name:"橘园美术馆",en:"Musée de l'Orangerie",cat:"museum",lat:48.8638,lng:2.3222,price:12.5,reserve:true,top:true,notes:"莫奈睡莲系列巨幅全景画"},
   {id:4,name:"罗丹美术馆",en:"Musée Rodin",cat:"museum",lat:48.8554,lng:2.3158,price:14,reserve:false,top:true,notes:"《思想者》雕塑原件所在地"},
@@ -932,7 +944,7 @@ const sites=[
   {id:25,name:"海军府",en:"Hôtel de la Marine",cat:"monument",lat:48.8655,lng:2.3214,price:17,reserve:true,top:false,notes:"协和广场旁，18世纪皇家宫殿内部"},
   {id:26,name:"圣德尼圣殿",en:"Basilique Saint-Denis",cat:"monument",lat:48.9354,lng:2.3583,price:9,reserve:false,top:false,notes:"法国历代国王陵寝，哥特建筑发源地"},
   {id:27,name:"西岱岛考古地下墓穴",en:"Crypte Archéologique",cat:"monument",lat:48.8531,lng:2.3486,price:9,reserve:false,top:false,notes:"巴黎历史地下遗址，2000年城市层积"},
-  {id:28,name:"凡尔赛宫",en:"Château de Versailles",cat:"palace",lat:48.8049,lng:2.1204,price:21,reserve:true,top:true,outside:true,notes:"太阳王路易十四行宫，镜厅·世界遗产"},
+  {id:28,name:"凡尔赛宫",en:"Château de Versailles",cat:"palace",lat:48.8049,lng:2.1204,price:21,reserve:true,top:true,outside:true,notes:"太阳王路易十四行宫，镜厅·世界遗产",ticketProcess:[{step:"第1步",desc:"抵达凡尔赛宫主大门"},{step:"第2步",desc:"找到大门左侧黄色售票处 🟡"},{step:"第3步",desc:"出示博物馆通票证件（电子或纸质）"},{step:"第4步",desc:"工作人员为您兑换纸质门票"},{step:"第5步",desc:"凭纸质门票直接入园，开始游览"}]},
   {id:29,name:"枫丹白露宫",en:"Château de Fontainebleau",cat:"palace",lat:48.4025,lng:2.7016,price:14,reserve:false,top:true,outside:true,notes:"法国历代国王猎宫，列入世界遗产"},
   {id:30,name:"文森城堡",en:"Château de Vincennes",cat:"palace",lat:48.8441,lng:2.4354,price:11,reserve:false,top:false,outside:false,notes:"14世纪中世纪皇家城堡，有护城河"},
   {id:31,name:"孔代博物馆·尚蒂伊城堡",en:"Château de Chantilly",cat:"palace",lat:49.1937,lng:2.4842,price:18,reserve:false,top:false,outside:true,notes:"法国最美城堡之一，孔代亲王收藏"},
@@ -942,27 +954,30 @@ const sites=[
 const catColors={museum:'#4a9eff',monument:'#ff6b6b',palace:'#a855f7',outside:'#22c55e'};
 const catIcons={museum:'🏛',monument:'🏛',palace:'🏰',outside:'🌿'};
 const catNames={museum:'博物馆',monument:'历史古迹',palace:'宫殿城堡',outside:'近郊景点'};
+
+// 🎯 专业博物馆通票推荐路线（基于官方Paris Museum Pass攻略）
+const recommendedRoutes={
+  '2': [
+    {name:'⭐ 卢浮宫 + 圣母院（必去首选）',desc:'节省：€100+',day:'Day 1：卢浮宫深度体验 Day 2：圣母院+塞纳河漫步',sites:[1,2,6],mustVisit:true,saved:'€100+'},
+    {name:'🎨 奥赛 + 罗丹博物馆（艺术爱好者）',desc:'节省：€75+',day:'Day 1：奥赛博物馆 Day 2：罗丹博物馆+其他',sites:[4,7,8,14,15],saved:'€75+'},
+    {name:'🏛️ 凯旋门 + 蓬皮杜（建筑艺术爱好者）',desc:'节省：€48+',day:'Day 1：凯旋门+香榭丽舍 Day 2：蓬皮杜中心',sites:[3,9,10,11,12],saved:'€48+'}
+  ],
+  '4': [
+    {name:'⭐ 卢浮宫 + 奥赛 + 凡尔赛（通票最大价值）',desc:'节省：€185+',day:'D1卢浮宫 D2奥赛+罗丹 D3凡尔赛宫 D4自由探索',sites:[1,2,4,7,8,14,15,28],mustVisit:true,saved:'€185+'},
+    {name:'🎭 博物馆深度游（集中游览5大美术馆）',desc:'节省：€240+',day:'D1卢浮宫 D2奥赛+毕加索 D3蓬皮杜 D4罗丹+其他',sites:[1,2,4,7,8,11,12,13,14,15,16,18],saved:'€240+'},
+    {name:'🏰 建筑与历史路线（古迹爱好者首选）',desc:'节省：€160+',day:'D1凯旋门+圣母院 D2凡尔赛宫 D3荣军院 D4其他古迹',sites:[3,5,6,9,10,20,22,25,28],saved:'€160+'}
+  ],
+  '6': [
+    {name:'⭐ 完整艺术之旅（掌握所有美术馆）',desc:'节省：€280+',day:'D1卢浮宫 D2奥赛+罗丹 D3毕加索+蓬皮杜 D4现代艺术',sites:[1,2,4,7,8,11,12,13,14,15,16,18,24],mustVisit:true,saved:'€280+'},
+    {name:'🌍 巴黎 + 近郊完整巡礼',desc:'节省：€350+',day:'D1-D3巴黎中心 D4凡尔赛宫 D5近郊景点',sites:[1,2,4,7,8,11,12,13,14,15,20,22,25,27,28,30],saved:'€350+'},
+    {name:'⛪ 古迹与宗教建筑（建筑学生必选）',desc:'节省：€260+',day:'D1圣母院+凯旋门 D2凡尔赛宫 D3荣军院 D4其他古迹',sites:[3,5,6,9,10,15,19,20,22,25,27,28,30],saved:'€260+'}
+  ]
+};
 function getCat(s){return s.outside?'outside':s.cat;}
 const map=L.map('map',{center:[48.860,2.347],zoom:13,zoomControl:true});
 
 // 定义多个地图图层
 const baseLayers={
-  '🌈 彩色地图':(
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/positron/{z}/{x}/{y}{r}.png',{
-      subdomains:'abcd',
-      maxZoom:19,
-      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      errorTileUrl:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
-    })
-  ),
-  '🗺️ 亮色详细':(
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/voyager/{z}/{x}/{y}{r}.png',{
-      subdomains:'abcd',
-      maxZoom:19,
-      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      errorTileUrl:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
-    })
-  ),
   '🛰️ 卫星实景':(
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
       maxZoom:19,
@@ -972,8 +987,8 @@ const baseLayers={
   )
 };
 
-// 默认加载彩色地图
-baseLayers['🌈 彩色地图'].addTo(map);
+// 默认加载卫星地图
+baseLayers['🛰️ 卫星实景'].addTo(map);
 
 // 添加图层控制器
 L.control.layers(baseLayers,null,{position:'topright',collapsed:false}).addTo(map);
@@ -989,7 +1004,26 @@ function buildPopup(site){
   if(site.reserve)n+='<span class="popup-note reserve">⚠️ 需预约</span>';
   if(site.closed)n+='<span class="popup-note closed">🚧 暂停开放</span>';
   if(site.outside)n+='<span class="popup-note outside-paris">🚆 近郊</span>';
-  return '<div class="popup-inner"><div class="popup-cat '+cat+'">● '+catNames[cat]+'</div><div class="popup-name">'+site.name+'</div><div class="popup-en">'+site.en+'</div><div class="popup-price"><span>通票节省（原价）</span><span class="price-val">'+priceStr+'</span></div>'+(n?'<div class="popup-notes">'+n+'</div>':'')+'<div style="margin-top:8px;font-size:11px;color:#777;line-height:1.5;">'+site.notes+'</div></div>';
+  
+  let entranceInfo='';
+  if(site.entrances && site.entrances.length > 0){
+    entranceInfo='<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);"><div style="font-size:12px;font-weight:600;color:#c9a227;margin-bottom:8px;">📍 主要入口及人流提示：</div>';
+    site.entrances.forEach(e=>{
+      entranceInfo+='<div style="font-size:11px;margin-bottom:6px;color:#ddd;"><strong>'+e.name+'</strong><br/>'+e.desc+'<br/><span style="color:#f0d98a;">人流：'+e.crowd+'</span></div>';
+    });
+    entranceInfo+='</div>';
+  }
+  
+  let ticketInfo='';
+  if(site.ticketProcess && site.ticketProcess.length > 0){
+    ticketInfo='<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);"><div style="font-size:12px;font-weight:600;color:#c9a227;margin-bottom:8px;">🎫 博物馆通票兑换流程：</div>';
+    site.ticketProcess.forEach(p=>{
+      ticketInfo+='<div style="font-size:11px;margin-bottom:6px;color:#ddd;"><strong>'+p.step+'</strong>：'+p.desc+'</div>';
+    });
+    ticketInfo+='</div>';
+  }
+  
+  return '<div class="popup-inner"><div class="popup-cat '+cat+'">● '+catNames[cat]+'</div><div class="popup-name">'+site.name+'</div><div class="popup-en">'+site.en+'</div><div class="popup-price"><span>通票节省（原价）</span><span class="price-val">'+priceStr+'</span></div>'+(n?'<div class="popup-notes">'+n+'</div>':'')+'<div style="margin-top:8px;font-size:11px;color:#777;line-height:1.5;">'+site.notes+'</div>'+entranceInfo+ticketInfo+'</div>';
 }
 sites.forEach(s=>{
   const m=L.marker([s.lat,s.lng],{icon:createIcon(s),title:s.name}).addTo(map);
@@ -1048,6 +1082,153 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
 document.getElementById('reserveToggle').addEventListener('click',function(){
   showReserveOnly=!showReserveOnly;this.classList.toggle('active',showReserveOnly);applyFilters();
 });
+
+// 路线管理变量
+let currentRouteIds=[];
+let currentRoutePolyline=null;
+let routeMarkers=[];
+
+// 绘制路线的函数
+function drawRoute(siteIds){
+  // 移除旧的连线和标记
+  if(currentRoutePolyline)map.removeLayer(currentRoutePolyline);
+  routeMarkers.forEach(m=>map.removeLayer(m));
+  routeMarkers=[];
+  currentRouteIds=siteIds;
+  
+  // 获取路线上所有景点的坐标
+  const routeSites=siteIds.map(id=>sites.find(s=>s.id===id)).filter(s=>s);
+  const coords=routeSites.map(s=>[s.lat,s.lng]);
+  
+  if(coords.length===0)return;
+  
+  // 绘制连线
+  currentRoutePolyline=L.polyline(coords,{
+    color:'#ff4444',
+    weight:3,
+    opacity:0.8,
+    dashArray:'5,5',
+    lineCap:'round',
+    lineJoin:'round'
+  }).addTo(map);
+  
+  // 添加路线节点标记（红圈+序号）
+  routeSites.forEach((site,idx)=>{
+    const markerHtml=`<div style="width:28px;height:28px;background:#ff4444;border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:12px;box-shadow:0 2px 8px rgba(255,68,68,0.5);">\${idx+1}</div>`;
+    const marker=L.marker([site.lat,site.lng],{
+      icon:L.divIcon({html:markerHtml,iconSize:[28,28],className:''})
+    }).addTo(map);
+    routeMarkers.push(marker);
+  });
+  
+  // 聚焦地图到路线
+  if(coords.length>0){
+    const bounds=L.latLngBounds(coords);
+    map.fitBounds(bounds,{padding:[60,60],maxZoom:14});
+  }
+}
+
+// 推荐路线功能
+function buildRoutesUI(){
+  const routesContainer=document.getElementById('routesContainer');
+  routesContainer.innerHTML='';
+  
+  // 添加推荐路线总标题
+  const headerDiv=document.createElement('div');
+  headerDiv.style.cssText='padding:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border-radius:8px 8px 0 0;margin-bottom:10px;box-shadow:0 2px 6px rgba(102,126,234,0.3);';
+  headerDiv.innerHTML='<div style="font-size:18px;font-weight:bold;margin-bottom:4px;">★ 推荐路线</div><div style="font-size:12px;opacity:0.9;">专业博物馆通票推荐 | 最大化通票价值</div>';
+  routesContainer.appendChild(headerDiv);
+  
+  // 按天数分组显示路线
+  [2,4,6].forEach(days=>{
+    const routes=recommendedRoutes[days]||[];
+    if(routes.length===0)return;
+    
+    // 排序：必去首选优先
+    const sorted=[...routes].sort((a,b)=>{
+      if(a.mustVisit && !b.mustVisit)return -1;
+      if(!a.mustVisit && b.mustVisit)return 1;
+      return 0;
+    });
+    
+    const groupDiv=document.createElement('div');
+    groupDiv.className='route-group';
+    groupDiv.style.cssText='margin-bottom:15px;';
+    
+    // 组标题
+    const titleDiv=document.createElement('div');
+    titleDiv.className='route-group-title';
+    titleDiv.style.cssText='background:#f5f5f5;padding:10px 12px;font-weight:bold;color:#333;border-left:4px solid #667eea;margin-bottom:8px;font-size:14px;';
+    titleDiv.textContent=days+'天通票方案';
+    groupDiv.appendChild(titleDiv);
+    
+    // 路线列表
+    sorted.forEach((route,idx)=>{
+      const routeEl=document.createElement('div');
+      routeEl.className='route-item';
+      
+      // 必去路线特殊样式
+      const bgColor=route.mustVisit?'#fffbf0':'#ffffff';
+      const borderColor=route.mustVisit?'#ffa500':'#ddd';
+      const borderStyle=route.mustVisit?'2px solid '+borderColor:'1px solid '+borderColor;
+      
+      routeEl.style.cssText='padding:12px;margin-bottom:8px;background:'+bgColor+';border:'+borderStyle+';border-radius:6px;cursor:pointer;transition:all 0.2s;';
+      
+      // 构建路线内容
+      let nameHtml=route.name;
+      if(route.mustVisit){
+        nameHtml='<strong style="color:#e74c3c;">★ 必去首选</strong><br/>'+nameHtml;
+      }
+      
+      let routeHTML='<div style="font-weight:bold;color:#333;margin-bottom:4px;font-size:13px;">'+nameHtml+'</div>';
+      routeHTML+='<div style="color:#666;font-size:12px;margin-bottom:6px;">'+route.desc+'</div>';
+      routeHTML+='<div style="color:#888;font-size:11px;line-height:1.5;display:flex;justify-content:space-between;">';
+      routeHTML+='<span>'+route.day+'</span>';
+      if(route.saved){
+        routeHTML+='<span style="color:#e74c3c;font-weight:bold;">节省'+route.saved+'欧</span>';
+      }
+      routeHTML+='</div>';
+      
+      routeEl.innerHTML=routeHTML;
+      
+      // 鼠标悬停效果
+      routeEl.addEventListener('mouseenter',()=>{
+        if(!routeEl.classList.contains('active')){
+          routeEl.style.backgroundColor=route.mustVisit?'#fff8e1':'#f9f9f9';
+          routeEl.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';
+        }
+      });
+      routeEl.addEventListener('mouseleave',()=>{
+        if(!routeEl.classList.contains('active')){
+          routeEl.style.backgroundColor=bgColor;
+          routeEl.style.boxShadow='none';
+        }
+      });
+      
+      // 点击事件
+      routeEl.addEventListener('click',()=>{
+        document.querySelectorAll('.route-item').forEach(e=>{
+          e.classList.remove('active');
+          const isMust=e.textContent.includes('必去首选');
+          e.style.backgroundColor=isMust?'#fffbf0':'#ffffff';
+          e.style.boxShadow='none';
+        });
+        routeEl.classList.add('active');
+        routeEl.style.backgroundColor='#e8f4f8';
+        routeEl.style.boxShadow='0 3px 12px rgba(102,126,234,0.3)';
+        drawRoute(route.sites);
+      });
+      
+      groupDiv.appendChild(routeEl);
+    });
+    
+    routesContainer.appendChild(groupDiv);
+  });
+}
+
+// 初始化路线UI
+buildRoutesUI();
+
 const fitBtn=L.control({position:'topright'});
 fitBtn.onAdd=function(){
   const div=document.createElement('div');div.className='leaflet-bar';
