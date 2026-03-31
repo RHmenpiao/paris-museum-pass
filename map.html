@@ -851,7 +851,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .route-desc { font-size: 10px; color: #999; line-height: 1.4; margin-bottom: 4px; }
     .route-day { font-size: 9px; color: #888; line-height: 1.3; font-style: italic; }
     @media(max-width:700px){ .sidebar { display:none; } header h1 { font-size: 15px; } }
-  </style>
+  
+    #routesContainer { position: absolute; right: 0; top: 0; width: 320px; height: 100%; background: linear-gradient(180deg,#0a1628 0%,#0d1b2a 50%,#0a1628 100%); box-shadow: -2px 0 15px rgba(0,0,0,0.5); z-index: 500; overflow-y: auto; border-left: 1px solid rgba(102,126,234,0.2); padding: 10px 0; }
+</style>
 </head>
 <body>
 <header>
@@ -957,22 +959,23 @@ const catNames={museum:'博物馆',monument:'历史古迹',palace:'宫殿城堡'
 
 // 🎯 专业博物馆通票推荐路线（基于官方Paris Museum Pass攻略）
 const recommendedRoutes={
-  '2': [
-    {name:'⭐ 卢浮宫 + 圣母院（必去首选）',desc:'节省：€100+',day:'Day 1：卢浮宫深度体验 Day 2：圣母院+塞纳河漫步',sites:[1,2,6],mustVisit:true,saved:'€100+'},
-    {name:'🎨 奥赛 + 罗丹博物馆（艺术爱好者）',desc:'节省：€75+',day:'Day 1：奥赛博物馆 Day 2：罗丹博物馆+其他',sites:[4,7,8,14,15],saved:'€75+'},
-    {name:'🏛️ 凯旋门 + 蓬皮杜（建筑艺术爱好者）',desc:'节省：€48+',day:'Day 1：凯旋门+香榭丽舍 Day 2：蓬皮杜中心',sites:[3,9,10,11,12],saved:'€48+'}
+  2:[
+    {name:'快闪艺术双馆游',desc:'卢浮宫+奥赛博物馆，2天逛遍西方艺术史',day:'Day1:卢浮宫 Day2:奥赛',sites:['卢浮宫','奥赛博物馆'],saved:'€100+',mustVisit:true},
+    {name:'古迹爱好者极速游',desc:'圣母院+荣军院+先贤祠，深度了解法国历史',day:'Day1:圣母院 Day2:先贤祠',sites:['圣母院','荣军院圆顶教堂','先贤祠'],saved:'€75+',mustVisit:false},
+    {name:'艺术迷最短路线',desc:'毕加索+罗丹美术馆，印象派大师作品集中地',day:'Day1:毕加索 Day2:罗丹',sites:['毕加索美术馆','罗丹美术馆'],saved:'€58+',mustVisit:false}
   ],
-  '4': [
-    {name:'⭐ 卢浮宫 + 奥赛 + 凡尔赛（通票最大价值）',desc:'节省：€185+',day:'D1卢浮宫 D2奥赛+罗丹 D3凡尔赛宫 D4自由探索',sites:[1,2,4,7,8,14,15,28],mustVisit:true,saved:'€185+'},
-    {name:'🎭 博物馆深度游（集中游览5大美术馆）',desc:'节省：€240+',day:'D1卢浮宫 D2奥赛+毕加索 D3蓬皮杜 D4罗丹+其他',sites:[1,2,4,7,8,11,12,13,14,15,16,18],saved:'€240+'},
-    {name:'🏰 建筑与历史路线（古迹爱好者首选）',desc:'节省：€160+',day:'D1凯旋门+圣母院 D2凡尔赛宫 D3荣军院 D4其他古迹',sites:[3,5,6,9,10,20,22,25,28],saved:'€160+'}
+  4:[
+    {name:'博物馆深度体验',desc:'卢浮宫+奥赛+毕加索+罗丹，西方艺术全景',day:'Day1:卢浮宫 Day2:奥赛 Day3:毕加索 Day4:罗丹',sites:['卢浮宫','奥赛博物馆','毕加索美术馆','罗丹美术馆'],saved:'€185+',mustVisit:true},
+    {name:'历史文化速冻机',desc:'凡尔赛+圣母院+先贤祠+荣军院，4天遍历法国权力中心',day:'Day1:凡尔赛 Day2:圣母院 Day3:先贤祠 Day4:荣军院',sites:['凡尔赛宫','圣母院','先贤祠','荣军院圆顶教堂'],saved:'€160+',mustVisit:false},
+    {name:'特种兵必选线路',desc:'卢浮宫+凡尔赛+毕加索+圣母院，性价比之王',day:'Day1:卢浮宫 Day2:凡尔赛 Day3:毕加索 Day4:圣母院',sites:['卢浮宫','凡尔赛宫','毕加索美术馆','圣母院'],saved:'€210+',mustVisit:false}
   ],
-  '6': [
-    {name:'⭐ 完整艺术之旅（掌握所有美术馆）',desc:'节省：€280+',day:'D1卢浮宫 D2奥赛+罗丹 D3毕加索+蓬皮杜 D4现代艺术',sites:[1,2,4,7,8,11,12,13,14,15,16,18,24],mustVisit:true,saved:'€280+'},
-    {name:'🌍 巴黎 + 近郊完整巡礼',desc:'节省：€350+',day:'D1-D3巴黎中心 D4凡尔赛宫 D5近郊景点',sites:[1,2,4,7,8,11,12,13,14,15,20,22,25,27,28,30],saved:'€350+'},
-    {name:'⛪ 古迹与宗教建筑（建筑学生必选）',desc:'节省：€260+',day:'D1圣母院+凯旋门 D2凡尔赛宫 D3荣军院 D4其他古迹',sites:[3,5,6,9,10,15,19,20,22,25,27,28,30],saved:'€260+'}
+  6:[
+    {name:'完整艺术朝圣之旅',desc:'卢浮宫+奥赛+毕加索+罗丹+蓬皮杜+凡尔赛，6天吃透西方艺术',day:'Day1:卢浮宫 Day2:奥赛 Day3:毕加索 Day4:罗丹 Day5:蓬皮杜 Day6:凡尔赛',sites:['卢浮宫','奥赛博物馆','毕加索美术馆','罗丹美术馆','蓬皮杜中心','凡尔赛宫'],saved:'€280+',mustVisit:true},
+    {name:'历史建筑深度游',desc:'凡尔赛+圣母院+先贤祠+荣军院+卢浮宫+蓬皮杜，从中世纪到现代',day:'Day1:凡尔赛 Day2:圣母院 Day3:先贤祠 Day4:荣军院 Day5:卢浮宫 Day6:蓬皮杜',sites:['凡尔赛宫','圣母院','先贤祠','荣军院圆顶教堂','卢浮宫','蓬皮杜中心'],saved:'€310+',mustVisit:false},
+    {name:'全能博物馆天团',desc:'卢浮宫+奥赛+毕加索+圣母院+荣军院+凡尔赛，最大化通票价值',day:'Day1:卢浮宫 Day2:奥赛 Day3:毕加索 Day4:圣母院+荣军院 Day5:凡尔赛 Day6:自由探索',sites:['卢浮宫','奥赛博物馆','毕加索美术馆','圣母院','荣军院圆顶教堂','凡尔赛宫'],saved:'€350+',mustVisit:false}
   ]
 };
+
 function getCat(s){return s.outside?'outside':s.cat;}
 const map=L.map('map',{center:[48.860,2.347],zoom:13,zoomControl:true});
 

@@ -248,11 +248,10 @@
 
 ---
 
-## Gitee 账户信息
+## GitHub 账户信息
 - **用户名**：RHmenpiao
-- **邮箱**：3312566165@qq.com
-- **仓库链接**：https://gitee.com/RHmenpiao/paris-museum-pass
-- **Personal Access Token**：已生成（projects 权限）
+- **仓库链接**：https://github.com/RHmenpiao/paris-museum-pass
+- **最后推送**：2026-03-31 23:07（推荐路线UI优化版本）
 
 ## 第四阶段完成（2026-03-31 22:52）
 
