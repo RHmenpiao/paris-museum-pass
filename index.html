@@ -218,10 +218,13 @@
     .price-table, .booking-info, .attraction-details {
       display: none;
       margin-top: 20px;
-      padding: 15px;
+      padding: 25px;
       background: #f9f9ff;
-      border-radius: 8px;
+      border-radius: 10px;
       border-left: 4px solid #667eea;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
     }
 
     .price-table.show, .booking-info.show, .attraction-details.show {
@@ -326,6 +329,116 @@
     .price-card .duration {
       color: #999;
       font-size: 14px;
+    }
+
+    .price-table .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0 30px 0;
+    }
+
+    .price-item {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      border: 1px solid #e0e0e0;
+    }
+
+    .price-duration {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      font-size: 32px;
+      font-weight: bold;
+      color: #764ba2;
+      margin-bottom: 5px;
+    }
+
+    .price-note {
+      font-size: 13px;
+      color: #999;
+      margin-top: 8px;
+    }
+
+    .single-price-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .single-price {
+      background: white;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+      font-size: 14px;
+    }
+
+    .booking-list {
+      margin: 15px 0 25px 0;
+    }
+
+    .booking-item {
+      background: #fff5f5;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border-left: 3px solid #ff6b35;
+      font-size: 14px;
+    }
+
+    .booking-tips {
+      background: #f0f8ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 1px solid #dbeafe;
+    }
+
+    .booking-tips p {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .attraction-details h4 {
+      color: #667eea;
+      margin: 20px 0 10px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .attraction-details hr {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px dashed #ddd;
+    }
+
+    .attraction-details p {
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .price-table .price-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .single-price-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .booking-item, .single-price {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
     }
 
     .contact-section {
@@ -474,28 +587,35 @@
         <h4>巴黎博物馆通票价格（2026年3月）</h4>
         <div class="price-grid">
           <div class="price-item">
-            <div class="price-duration">2天</div>
-            <div class="price-amount">€70</div>
-            <div class="price-note">单景点成本≈€35/天</div>
+            <div class="price-duration">2天通票</div>
+            <div class="price-amount">€87.45</div>
+            <div class="price-note">日均€43.73 · 连续使用</div>
           </div>
           <div class="price-item">
-            <div class="price-duration">4天</div>
-            <div class="price-amount">€90</div>
-            <div class="price-note">单景点成本≈€22.5/天</div>
+            <div class="price-duration">4天通票</div>
+            <div class="price-amount">€108.15</div>
+            <div class="price-note">日均€27.04 · 连续使用</div>
           </div>
           <div class="price-item">
-            <div class="price-duration">6天</div>
-            <div class="price-amount">€110</div>
-            <div class="price-note">单景点成本≈€18.3/天</div>
+            <div class="price-duration">6天通票</div>
+            <div class="price-amount">€128.85</div>
+            <div class="price-note">日均€21.48 · 连续使用</div>
           </div>
         </div>
-        <h4>部分热门景点单票价格</h4>
+        <h4 style="margin-top: 25px;">热门景点单票价格（2026年）</h4>
         <div class="single-price-list">
           <div class="single-price"><strong>卢浮宫：</strong>€32（非欧洲游客）</div>
-          <div class="single-price"><strong>奥赛美术馆：</strong>€18</div>
-          <div class="single-price"><strong>凡尔赛宫：</strong>€21</div>
-          <div class="single-price"><strong>蓬皮杜中心：</strong>€15</div>
-          <div class="single-price"><strong>圣礼拜堂：</strong>€12</div>
+          <div class="single-price"><strong>凡尔赛宫：</strong>€21（宫殿+花园）</div>
+          <div class="single-price"><strong>奥赛美术馆：</strong>€18（印象派）</div>
+          <div class="single-price"><strong>毕加索博物馆：</strong>€16（16000件作品）</div>
+          <div class="single-price"><strong>凯旋门：</strong>€13（登顶+展馆）</div>
+          <div class="single-price"><strong>圣礼拜堂：</strong>€13（彩绘玻璃）</div>
+          <div class="single-price"><strong>蓬皮杜中心：</strong>€15（现代艺术）</div>
+          <div class="single-price"><strong>罗丹美术馆：</strong>€14（雕塑花园）</div>
+          <div class="single-price"><strong>先贤祠：</strong>€12（伟人陵墓）</div>
+          <div class="single-price"><strong>荣军院圆顶：</strong>€15（拿破仑墓）</div>
+          <div class="single-price"><strong>枫丹白露宫：</strong>€14（法国猎宫）</div>
+          <div class="single-price"><strong>阿拉伯世界：</strong>€10（伊斯兰艺术）</div>
         </div>
         <p style="margin-top: 12px; font-size: 14px; color: #666;">✅ 购买通票：<a href="https://m.tb.cn/h.iQwNgaY?tk=x0CL52X0JO7" target="_blank" style="color:#667eea;font-weight:bold;">点击前往闲鱼店铺</a></p>
       </div>
@@ -508,12 +628,14 @@
         <div class="feature-card-click-hint">点击查看提醒</div>
       </div>
       <div class="booking-info" id="bookingInfo">
-        <h4>⚠️ 需要提前预约的景点</h4>
+        <h4 style="color: #e63946;">⚠️ 必须提前预约的景点</h4>
         <div class="booking-list">
-          <div class="booking-item"><strong>卢浮宫：</strong>强烈建议提前预约，免排队</div>
-          <div class="booking-item"><strong>凡尔赛宫：</strong>建议预约，高峰期排队严重</div>
-          <div class="booking-item"><strong>圣礼拜堂：</strong>最好提前预约</div>
-          <div class="booking-item"><strong>橘园美术馆：</strong>旺季需预约</div>
+          <div class="booking-item"><strong>卢浮宫：</strong><span style="color:#e63946;font-weight:bold;">必须预约</span>，旺季排队2-3小时以上</div>
+          <div class="booking-item"><strong>凡尔赛宫：</strong><span style="color:#e63946;font-weight:bold;">强烈建议预约</span>，特别是镜厅</div>
+          <div class="booking-item"><strong>圣礼拜堂：</strong>建议预约，容量有限</div>
+          <div class="booking-item"><strong>橘园美术馆：</strong>旺季需预约，尤其是周末</div>
+          <div class="booking-item"><strong>毕加索博物馆：</strong>旺季建议预约</div>
+          <div class="booking-item"><strong>凯旋门：</strong>周末建议预约，登顶电梯容量小</div>
         </div>
         <h4>预约提示</h4>
         <div class="booking-tips">
@@ -534,18 +656,38 @@
       <div class="attraction-details" id="attractionDetails">
         <h4>🏛️ 卢浮宫（★★★★★）</h4>
         <p><strong>特色：</strong>世界最大艺术博物馆，《蒙娜丽莎》、《米洛的维纳斯》、《胜利女神》</p>
-        <p><strong>注意事项：</strong>需安检，热门展厅拥挤，建议早晨入场</p>
+        <p><strong>注意事项：</strong>需安检，热门展厅拥挤，建议早晨入场或预约下午场</p>
         <p><strong>票价：</strong>€32（通票免费进入，需预约）</p>
         <hr>
         <h4>🏰 凡尔赛宫（★★★★★）</h4>
-        <p><strong>特色：</strong>法国王室宫殿，镜厅壮观，花园广阔</p>
-        <p><strong>注意事项：</strong>距市区较远，需单独交通费，花园门票€10额外</p>
+        <p><strong>特色：</strong>法国王室宫殿，镜厅壮观，花园广阔，世界遗产</p>
+        <p><strong>注意事项：</strong>距市区较远（RER C线），花园门票€10额外，建议预留5-6小时</p>
         <p><strong>票价：</strong>€21（通票免费进入，花园门票另计）</p>
         <hr>
         <h4>🖼️ 奥赛美术馆（★★★★☆）</h4>
-        <p><strong>特色：</strong>印象派大师作品集中地，由火车站改建</p>
-        <p><strong>注意事项：</strong>内部空间大，建议预留3小时</p>
+        <p><strong>特色：</strong>印象派大师作品集中地，莫奈、梵高、雷诺阿</p>
+        <p><strong>注意事项：</strong>内部空间大，建议预留3-4小时，5楼咖啡厅可俯瞰塞纳河</p>
         <p><strong>票价：</strong>€18（通票免费进入）</p>
+        <hr>
+        <h4>🎨 毕加索博物馆（★★★★☆）</h4>
+        <p><strong>特色：</strong>毕加索作品最大个人收藏（16000件），位于17世纪马雷区豪宅</p>
+        <p><strong>注意事项：</strong>2019年重新开放，现代展示，展品按创作时期分类</p>
+        <p><strong>票价：</strong>€16（通票免费进入）</p>
+        <hr>
+        <h4>⛪ 圣礼拜堂（★★★★☆）</h4>
+        <p><strong>特色：</strong>哥特式建筑巅峰，15米高彩绘玻璃窗（1242年）</p>
+        <p><strong>注意事项：</strong>与巴黎古监狱联票€15，建议晴天参观观赏光线效果</p>
+        <p><strong>票价：</strong>€13（通票免费进入）</p>
+        <hr>
+        <h4>🏢 蓬皮杜中心（★★★★☆）</h4>
+        <p><strong>特色：</strong>现代艺术，毕加索、马蒂斯、康定斯基，建筑外观独特</p>
+        <p><strong>注意事项：</strong>时常有临时展览额外收费，6楼观景台免费（需另外排队）</p>
+        <p><strong>票价：</strong>€15（通票免费进入）</p>
+        <hr>
+        <h4>🗿 罗丹美术馆（★★★★☆）</h4>
+        <p><strong>特色：</strong>《思想者》、《地狱之门》等雕塑，精美雕塑花园</p>
+        <p><strong>注意事项：</strong>花园在春秋季特别漂亮，建议预留2-3小时</p>
+        <p><strong>票价：</strong>€14（通票免费进入）</p>
       </div>
     </div>
   </section>
@@ -579,7 +721,7 @@
         <div class="price-grid">
           <div class="price-card">
             <h4>2日通票</h4>
-            <div class="price">€87.48</div>
+            <div class="price">€87.45</div>
             <div class="duration">连续2天有效</div>
           </div>
           <div class="price-card">
@@ -589,21 +731,26 @@
           </div>
           <div class="price-card">
             <h4>6日通票</h4>
-            <div class="price">€127.45</div>
+            <div class="price">€128.85</div>
             <div class="duration">连续6天有效</div>
           </div>
         </div>
 
-        <h3 style="margin-top: 40px;">重点景点单价</h3>
+        <h3 style="margin-top: 40px;">重点景点单价（2026年最新）</h3>
         <p>如果不使用通票，以下为各景点最新官方单价：</p>
         <ul>
-          <li>🏛️ <strong>卢浮宫</strong> (Musée du Louvre)：€32 - 世界最大博物馆，蒙娜丽莎、胜利女神所在地</li>
-          <li>🏛️ <strong>凡尔赛宫</strong> (Château de Versailles)：€21 - 太阳王路易十四行宫，世界遗产</li>
-          <li>🏛️ <strong>奥赛美术馆</strong> (Musée d'Orsay)：€16 - 印象派艺术圣殿，莫奈、梵高集中地</li>
-          <li>🏛️ <strong>毕加索博物馆</strong> (Musée Picasso)：€16 - 毕加索作品最大个人收藏</li>
-          <li>🏛️ <strong>凯旋门</strong> (Arc de Triomphe)：€13 - 香榭丽舍大道顶端，俯瞰巴黎全景</li>
-          <li>⛪ <strong>圣礼拜堂</strong> (Sainte-Chapelle)：€13 - 哥特式彩绘玻璃窗极品</li>
-          <li>🏰 <strong>枫丹白露宫</strong> (Château de Fontainebleau)：€14 - 法国历代国王猎宫</li>
+          <li>🏛️ <strong>卢浮宫</strong>：€32（非欧洲游客）- 世界最大博物馆，《蒙娜丽莎》</li>
+          <li>🏰 <strong>凡尔赛宫</strong>：€21（宫殿+花园）- 太阳王路易十四行宫，世界遗产</li>
+          <li>🖼️ <strong>奥赛美术馆</strong>：€18 - 印象派艺术圣殿，莫奈、梵高、雷诺阿</li>
+          <li>🎨 <strong>毕加索博物馆</strong>：€16 - 毕加索作品最大个人收藏（16000件）</li>
+          <li>🏛️ <strong>凯旋门</strong>：€13 - 香榭丽舍大道顶端，俯瞰巴黎全景</li>
+          <li>⛪ <strong>圣礼拜堂</strong>：€13 - 哥特式彩绘玻璃窗极品（1242年）</li>
+          <li>🏢 <strong>蓬皮杜中心</strong>：€15 - 现代艺术，毕加索、马蒂斯</li>
+          <li>🗿 <strong>罗丹美术馆</strong>：€14 - 《思想者》雕像，雕塑花园</li>
+          <li>🏛️ <strong>先贤祠</strong>：€12 - 伏尔泰、卢梭、雨果等伟人陵墓</li>
+          <li>⚰️ <strong>荣军院圆顶教堂</strong>：€15 - 拿破仑一世陵墓，军事博物馆</li>
+          <li>🏰 <strong>枫丹白露宫</strong>：€14 - 法国历代国王猎宫，世界遗产</li>
+          <li>🌙 <strong>阿拉伯世界研究所</strong>：€10 - 伊斯兰艺术与建筑</li>
         </ul>
 
         <p style="background: #f0f4ff; padding: 15px; border-radius: 5px; margin-top: 20px; color: #555;">
