@@ -180,6 +180,41 @@
       gap: 25px;
     }
 
+    .feature-card-container {
+      position: relative;
+    }
+
+    .feature-card.expanded {
+      grid-column: span 4;
+      position: relative;
+      z-index: 20;
+    }
+
+    .feature-card.expanded .price-table,
+    .feature-card.expanded .booking-info,
+    .feature-card.expanded .attraction-details {
+      display: block;
+      max-height: none;
+      margin-top: 25px;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #667eea;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+
+    @media (max-width: 1024px) {
+      .feature-card.expanded {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .feature-card.expanded {
+        grid-column: span 1;
+      }
+    }
+
     .feature-card {
       background: white;
       padding: 30px;
@@ -867,10 +902,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       const featureCards = document.querySelectorAll('.feature-card');
       const currentlyActive = {};
+      const featuresSection = document.querySelector('.features');
 
+      // 为每个卡片添加点击事件
       featureCards.forEach(card => {
         const featureType = card.getAttribute('data-feature');
-        const contentDiv = card.querySelector('.feature-card-content');
         const infoDiv = card.querySelector('.price-table, .booking-info, .attraction-details');
         
         // 第一个卡片（地图）保持链接功能
@@ -889,37 +925,30 @@
           // 如果点击的是内部链接（如闲鱼链接），不触发卡片折叠
           if (e.target.tagName === 'A') return;
           
-          // 如果当前已经有展开的内容，点击非激活区域则关闭
-          if (infoDiv && infoDiv.classList.contains('show')) {
-            // 点击了其他卡片，关闭当前激活的
-            featureCards.forEach(c => {
-              const cInfo = c.querySelector('.price-table, .booking-info, .attraction-details');
-              if (cInfo) {
-                cInfo.classList.remove('show');
-                c.classList.remove('active');
-              }
-            });
-            return;
-          }
-
-          // 切换显示/隐藏
+          // 检查当前卡片是否已经展开
+          const isAlreadyExpanded = card.classList.contains('expanded');
+          
+          // 移除所有卡片的展开状态
           featureCards.forEach(c => {
+            c.classList.remove('expanded');
             const cInfo = c.querySelector('.price-table, .booking-info, .attraction-details');
             if (cInfo) {
               cInfo.classList.remove('show');
               c.classList.remove('active');
             }
           });
-          
-          if (infoDiv) {
-            infoDiv.classList.add('show');
+
+          // 如果之前未展开，现在展开并显示内容
+          if (!isAlreadyExpanded && infoDiv) {
+            card.classList.add('expanded');
             card.classList.add('active');
+            infoDiv.classList.add('show');
             
             // 滚动到可见区域
             setTimeout(() => {
-              const rect = infoDiv.getBoundingClientRect();
+              const rect = card.getBoundingClientRect();
               if (rect.top < 100) {
-                infoDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }
             }, 100);
           }
@@ -934,6 +963,7 @@
             if (infoDiv) {
               infoDiv.classList.remove('show');
               c.classList.remove('active');
+              c.classList.remove('expanded');
             }
           });
         }
