@@ -176,18 +176,21 @@
       position: relative;
       z-index: 10;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 25px;
     }
 
     .feature-card-container {
-      position: relative;
+      grid-column: span 1;
     }
 
     .feature-card.expanded {
-      grid-column: span 4;
+      grid-column: 1 / -1;
       position: relative;
       z-index: 20;
+      margin-top: 25px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
     }
 
     .feature-card.expanded .price-table,
@@ -204,14 +207,20 @@
     }
 
     @media (max-width: 1024px) {
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
       .feature-card.expanded {
-        grid-column: span 2;
+        grid-column: 1 / -1;
       }
     }
 
     @media (max-width: 768px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
       .feature-card.expanded {
-        grid-column: span 1;
+        grid-column: 1;
       }
     }
 
@@ -221,16 +230,21 @@
       border-radius: 10px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.1);
       text-align: center;
-      transition: transform 0.3s;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .feature-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
 
-    .feature-card.active {
+    .feature-card.expanded {
+      transform: translateY(20px);
+      z-index: 10;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       border: 2px solid #667eea;
       background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
     }
@@ -901,8 +915,8 @@
     // 功能卡片点击交互
     document.addEventListener('DOMContentLoaded', function() {
       const featureCards = document.querySelectorAll('.feature-card');
-      const currentlyActive = {};
-      const featuresSection = document.querySelector('.features');
+      const featuresContainer = document.querySelector('.features');
+      let currentExpandedCard = null;
 
       // 为每个卡片添加点击事件
       featureCards.forEach(card => {
@@ -928,44 +942,42 @@
           // 检查当前卡片是否已经展开
           const isAlreadyExpanded = card.classList.contains('expanded');
           
-          // 移除所有卡片的展开状态
-          featureCards.forEach(c => {
-            c.classList.remove('expanded');
-            const cInfo = c.querySelector('.price-table, .booking-info, .attraction-details');
-            if (cInfo) {
-              cInfo.classList.remove('show');
-              c.classList.remove('active');
-            }
-          });
-
-          // 如果之前未展开，现在展开并显示内容
-          if (!isAlreadyExpanded && infoDiv) {
+          // 如果当前已经有展开的卡片，先关闭它
+          if (currentExpandedCard && currentExpandedCard !== card) {
+            currentExpandedCard.classList.remove('expanded');
+            const prevInfoDiv = currentExpandedCard.querySelector('.price-table, .booking-info, .attraction-details');
+            if (prevInfoDiv) prevInfoDiv.classList.remove('show');
+          }
+          
+          // 如果当前卡片已经展开，则关闭它
+          if (isAlreadyExpanded) {
+            card.classList.remove('expanded');
+            if (infoDiv) infoDiv.classList.remove('show');
+            currentExpandedCard = null;
+          } else {
+            // 展开当前卡片
             card.classList.add('expanded');
-            card.classList.add('active');
-            infoDiv.classList.add('show');
+            if (infoDiv) infoDiv.classList.add('show');
+            currentExpandedCard = card;
             
-            // 滚动到可见区域
+            // 平滑滚动到可见区域
             setTimeout(() => {
               const rect = card.getBoundingClientRect();
               if (rect.top < 100) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }
-            }, 100);
+            }, 50);
           }
         });
       });
 
       // 点击页面其他地方关闭展开的内容
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.feature-card')) {
-          featureCards.forEach(c => {
-            const infoDiv = c.querySelector('.price-table, .booking-info, .attraction-details');
-            if (infoDiv) {
-              infoDiv.classList.remove('show');
-              c.classList.remove('active');
-              c.classList.remove('expanded');
-            }
-          });
+        if (!e.target.closest('.feature-card') && currentExpandedCard) {
+          currentExpandedCard.classList.remove('expanded');
+          const infoDiv = currentExpandedCard.querySelector('.price-table, .booking-info, .attraction-details');
+          if (infoDiv) infoDiv.classList.remove('show');
+          currentExpandedCard = null;
         }
       });
     });
