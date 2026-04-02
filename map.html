@@ -850,7 +850,21 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .route-name { font-weight: 600; color: #fff; margin-bottom: 4px; }
     .route-desc { font-size: 10px; color: #999; line-height: 1.4; margin-bottom: 4px; }
     .route-day { font-size: 9px; color: #888; line-height: 1.3; font-style: italic; }
-    @media(max-width:700px){ .sidebar { display:none; } header h1 { font-size: 15px; } }
+    @media(max-width:700px){ 
+      .sidebar { display:none; } 
+      #routesContainer { display:none; }
+      header h1 { font-size: 15px; } 
+      .main { flex-direction: column; }
+      #map { flex: 1 0 auto; width: 100%; height: calc(100vh - 150px); }
+      .filter-bar { padding: 8px 10px; gap: 6px; }
+      .filter-label { font-size: 11px; }
+      .filter-btn { padding: 5px 10px; font-size: 12px; }
+      .divider { display: none; }
+      .reserve-btn { padding: 5px 10px; font-size: 12px; }
+      /* 确保popup在抽屉上方显示 */
+      .leaflet-popup { z-index: 2000 !important; }
+      .leaflet-popup-content-wrapper { z-index: 2001 !important; }
+    }
   
     #routesContainer { position: absolute; right: 0; top: 0; width: 320px; height: 100%; background: linear-gradient(180deg,#0a1628 0%,#0d1b2a 50%,#0a1628 100%); box-shadow: -2px 0 15px rgba(0,0,0,0.5); z-index: 500; overflow-y: auto; border-left: 1px solid rgba(102,126,234,0.2); padding: 10px 0; }
 
@@ -1693,7 +1707,18 @@ fitBtn.addTo(map);
 // =============================================
 (function initMobileDrawer(){
   // 只在手机端初始化（宽度 <= 700px）
-  if(window.innerWidth > 700) return;
+  if(window.innerWidth > 700) {
+    // 桌面端：确保手机端元素隐藏
+    const mobileBtn = document.getElementById('mobileRouteBtn');
+    const drawer = document.getElementById('mobileRouteDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    const banner = document.getElementById('mobileActiveRouteBanner');
+    if(mobileBtn) mobileBtn.style.display = 'none';
+    if(drawer) drawer.style.display = 'none';
+    if(overlay) overlay.style.display = 'none';
+    if(banner) banner.style.display = 'none';
+    return;
+  }
 
   const drawer   = document.getElementById('mobileRouteDrawer');
   const overlay  = document.getElementById('drawerOverlay');
@@ -1711,6 +1736,8 @@ fitBtn.addTo(map);
     drawer.classList.add('open');
     overlay.classList.add('show');
     renderRoutes(currentDays);
+    // 关闭所有打开的popup
+    map.closePopup();
   }
   function closeDrawer(){
     drawer.classList.remove('open');
@@ -1720,6 +1747,14 @@ fitBtn.addTo(map);
   openBtn.addEventListener('click', openDrawer);
   closeBtn.addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
+  
+  // 点击抽屉把手也可以关闭
+  drawer.querySelector('.drawer-handle').addEventListener('click', closeDrawer);
+  
+  // 防止抽屉内部点击事件冒泡到蒙层
+  drawer.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
 
   // ── 天数 Tab ──
   tabsWrap.querySelectorAll('.drawer-tab').forEach(tab=>{
@@ -1789,6 +1824,38 @@ fitBtn.addTo(map);
 
   // 初始化渲染第一次
   renderRoutes(currentDays);
+  
+  // 调试：确保抽屉功能可用
+  console.log('手机端抽屉功能初始化完成，当前宽度:', window.innerWidth, 'px');
+  
+  // 确保抽屉在手机端正确显示
+  if(window.innerWidth <= 700) {
+    const drawer = document.getElementById('mobileRouteDrawer');
+    const openBtn = document.getElementById('mobileRouteBtn');
+    if(drawer && openBtn) {
+      console.log('手机端抽屉和按钮元素已正确获取');
+      openBtn.style.display = 'flex'; // 确保按钮显示
+    }
+  }
+  
+  // 添加窗口大小变化监听器
+  window.addEventListener('resize', function() {
+    if(window.innerWidth > 700) {
+      // 切换到桌面模式：隐藏手机端元素
+      const mobileBtn = document.getElementById('mobileRouteBtn');
+      const drawer = document.getElementById('mobileRouteDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      const banner = document.getElementById('mobileActiveRouteBanner');
+      if(mobileBtn) mobileBtn.style.display = 'none';
+      if(drawer) drawer.style.display = 'none';
+      if(overlay) overlay.style.display = 'none';
+      if(banner) banner.style.display = 'none';
+    } else {
+      // 切换到手机模式：显示手机端元素
+      const mobileBtn = document.getElementById('mobileRouteBtn');
+      if(mobileBtn) mobileBtn.style.display = 'flex';
+    }
+  });
 })();
 </script>
 
