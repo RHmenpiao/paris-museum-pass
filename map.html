@@ -853,6 +853,293 @@ svg.leaflet-image-layer.leaflet-interactive path {
     @media(max-width:700px){ .sidebar { display:none; } header h1 { font-size: 15px; } }
   
     #routesContainer { position: absolute; right: 0; top: 0; width: 320px; height: 100%; background: linear-gradient(180deg,#0a1628 0%,#0d1b2a 50%,#0a1628 100%); box-shadow: -2px 0 15px rgba(0,0,0,0.5); z-index: 500; overflow-y: auto; border-left: 1px solid rgba(102,126,234,0.2); padding: 10px 0; }
+
+    /* =============================================
+       手机端专属样式（桌面端不受影响）
+       ============================================= */
+
+    /* 手机端 popup 优化 */
+    @media(max-width:700px){
+      /* popup 容器更大更易触摸 */
+      .leaflet-popup-content-wrapper {
+        border-radius: 14px !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        max-width: 88vw !important;
+        min-width: 260px !important;
+      }
+      .leaflet-popup-content {
+        margin: 0 !important;
+        width: auto !important;
+      }
+      .popup-inner {
+        padding: 16px !important;
+      }
+      .popup-name {
+        font-size: 18px !important;
+        margin-bottom: 6px !important;
+      }
+      .popup-en {
+        font-size: 12px !important;
+      }
+      .popup-price {
+        font-size: 14px !important;
+        padding: 10px 12px !important;
+        margin: 10px 0 !important;
+      }
+      .price-val {
+        font-size: 18px !important;
+      }
+      .popup-note {
+        font-size: 12px !important;
+        padding: 4px 10px !important;
+      }
+      /* 关闭按钮更易点击 */
+      .leaflet-popup-close-button {
+        font-size: 22px !important;
+        padding: 6px 10px !important;
+        width: 36px !important;
+        height: 36px !important;
+        line-height: 24px !important;
+      }
+    }
+
+    /* ── 手机端推荐方案悬浮按钮 ── */
+    #mobileRouteBtn {
+      display: none; /* 默认隐藏，手机端才显示 */
+    }
+    @media(max-width:700px){
+      #mobileRouteBtn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: fixed;
+        right: 16px;
+        bottom: 28px;
+        z-index: 1200;
+        background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+        color: #fff;
+        border: none;
+        border-radius: 28px;
+        padding: 13px 20px;
+        font-size: 15px;
+        font-weight: 700;
+        box-shadow: 0 6px 24px rgba(102,126,234,0.55);
+        cursor: pointer;
+        user-select: none;
+        transition: transform .15s, box-shadow .15s;
+      }
+      #mobileRouteBtn:active {
+        transform: scale(0.95);
+        box-shadow: 0 3px 12px rgba(102,126,234,0.4);
+      }
+      #mobileRouteBtn .btn-star { font-size: 18px; }
+    }
+
+    /* ── 手机端推荐方案底部抽屉 ── */
+    #mobileRouteDrawer {
+      display: none;
+    }
+    @media(max-width:700px){
+      #mobileRouteDrawer {
+        display: block;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 1500;
+        background: #0d1b2a;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -6px 40px rgba(0,0,0,0.6);
+        max-height: 80vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        /* 默认收起 */
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      }
+      #mobileRouteDrawer.open {
+        transform: translateY(0);
+      }
+      /* 拖动把手 */
+      .drawer-handle {
+        width: 40px; height: 4px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 2px;
+        margin: 12px auto 0;
+        flex-shrink: 0;
+      }
+      /* 抽屉头部 */
+      .drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 18px 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        flex-shrink: 0;
+      }
+      .drawer-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .drawer-close {
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: #fff;
+        border-radius: 50%;
+        width: 32px; height: 32px;
+        font-size: 18px;
+        line-height: 32px;
+        text-align: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      /* 天数选项卡 */
+      .drawer-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 10px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        flex-shrink: 0;
+      }
+      .drawer-tab {
+        flex: 1;
+        background: rgba(255,255,255,0.07);
+        border: 1.5px solid rgba(255,255,255,0.1);
+        color: #aaa;
+        border-radius: 20px;
+        padding: 7px 0;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .2s;
+        text-align: center;
+      }
+      .drawer-tab.active {
+        background: linear-gradient(135deg,#667eea,#764ba2);
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 3px 12px rgba(102,126,234,0.4);
+      }
+      /* 路线列表滚动区 */
+      .drawer-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 12px 20px;
+        -webkit-overflow-scrolling: touch;
+      }
+      /* 单条路线卡片 */
+      .mobile-route-card {
+        background: #161f30;
+        border: 1.5px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all .2s;
+        position: relative;
+      }
+      .mobile-route-card:active,
+      .mobile-route-card.active {
+        background: rgba(102,126,234,0.15);
+        border-color: #667eea;
+      }
+      .mobile-route-card.must-visit {
+        background: #1a1a0d;
+        border-color: rgba(201,162,39,0.35);
+      }
+      .mobile-route-card.must-visit.active {
+        border-color: #c9a227;
+        background: rgba(201,162,39,0.1);
+      }
+      .mobile-route-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .mobile-route-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.3;
+      }
+      .mobile-route-badge {
+        background: linear-gradient(135deg,#f59e0b,#d97706);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 2px 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .mobile-route-saved {
+        display: inline-block;
+        background: rgba(34,197,94,0.15);
+        color: #22c55e;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 2px 8px;
+        margin-bottom: 6px;
+      }
+      .mobile-route-desc {
+        font-size: 12px;
+        color: #999;
+        line-height: 1.5;
+        margin-bottom: 6px;
+      }
+      .mobile-route-schedule {
+        font-size: 11px;
+        color: #778;
+        line-height: 1.6;
+        white-space: pre-line;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        padding-top: 7px;
+        margin-top: 4px;
+      }
+      .mobile-route-tip {
+        margin-top: 8px;
+        font-size: 11px;
+        color: #c9a227;
+        background: rgba(201,162,39,0.08);
+        border-radius: 6px;
+        padding: 5px 9px;
+      }
+      /* 已选路线提示条 */
+      #mobileActiveRouteBanner {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1100;
+        background: linear-gradient(90deg,#667eea,#764ba2);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 9px 16px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        animation: slideDown .3s ease;
+      }
+      #mobileActiveRouteBanner.show { display: block; }
+      @keyframes slideDown {
+        from { transform: translateY(-100%); }
+        to   { transform: translateY(0); }
+      }
+      /* 蒙层 */
+      #drawerOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 1400;
+      }
+      #drawerOverlay.show { display: block; }
+    }
 </style>
 </head>
 <body>
@@ -1400,6 +1687,138 @@ fitBtn.onAdd=function(){
   return div;
 };
 fitBtn.addTo(map);
+
+// =============================================
+// 手机端推荐方案抽屉功能
+// =============================================
+(function initMobileDrawer(){
+  // 只在手机端初始化（宽度 <= 700px）
+  if(window.innerWidth > 700) return;
+
+  const drawer   = document.getElementById('mobileRouteDrawer');
+  const overlay  = document.getElementById('drawerOverlay');
+  const openBtn  = document.getElementById('mobileRouteBtn');
+  const closeBtn = document.getElementById('drawerCloseBtn');
+  const banner   = document.getElementById('mobileActiveRouteBanner');
+  const tabsWrap = document.getElementById('drawerTabs');
+  const body     = document.getElementById('drawerBody');
+
+  let currentDays = 2;
+  let activeCard  = null;
+
+  // ── 打开/关闭抽屉 ──
+  function openDrawer(){
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+    renderRoutes(currentDays);
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+
+  openBtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  // ── 天数 Tab ──
+  tabsWrap.querySelectorAll('.drawer-tab').forEach(tab=>{
+    tab.addEventListener('click', function(){
+      tabsWrap.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
+      this.classList.add('active');
+      currentDays = parseInt(this.dataset.days);
+      renderRoutes(currentDays);
+    });
+  });
+
+  // ── 渲染路线列表 ──
+  function renderRoutes(days){
+    const routes = recommendedRoutes[days] || [];
+    // 必去优先
+    const sorted = [...routes].sort((a,b)=>{
+      if(a.mustVisit && !b.mustVisit) return -1;
+      if(!a.mustVisit && b.mustVisit) return 1;
+      return 0;
+    });
+    body.innerHTML = '';
+    sorted.forEach((route, idx)=>{
+      const card = document.createElement('div');
+      card.className = 'mobile-route-card' + (route.mustVisit?' must-visit':'');
+      card.innerHTML = `
+        <div class="mobile-route-top">
+          <div class="mobile-route-name">${route.mustVisit?'★ ':''}${route.name}</div>
+          ${route.mustVisit ? '<span class="mobile-route-badge">必去首选</span>' : ''}
+        </div>
+        <div class="mobile-route-saved">节省 ${route.saved}</div>
+        <div class="mobile-route-desc">${route.desc}</div>
+        <div class="mobile-route-schedule">${route.schedule}</div>
+        ${route.tips ? `<div class="mobile-route-tip">💡 ${route.tips}</div>` : ''}
+      `;
+      card.addEventListener('click', function(){
+        // 切换激活状态
+        if(activeCard === card){
+          // 再次点击 → 取消路线
+          card.classList.remove('active');
+          if(currentRoutePolyline) map.removeLayer(currentRoutePolyline);
+          routeMarkers.forEach(m=>map.removeLayer(m));
+          routeMarkers=[];
+          currentRouteIds=[];
+          activeCard = null;
+          banner.classList.remove('show');
+          closeDrawer();
+          return;
+        }
+        // 取消之前的激活
+        body.querySelectorAll('.mobile-route-card').forEach(c=>c.classList.remove('active'));
+        card.classList.add('active');
+        activeCard = card;
+        // 绘制路线
+        drawRoute(route.sites);
+        // 显示顶部提示条
+        banner.textContent = `★ 当前路线：${route.name}（${days}天）· 点击地图查看景点`;
+        banner.classList.add('show');
+        // 关闭抽屉，让用户看地图
+        closeDrawer();
+        // 3秒后隐藏提示条
+        clearTimeout(banner._timer);
+        banner._timer = setTimeout(()=>banner.classList.remove('show'), 4000);
+      });
+      body.appendChild(card);
+    });
+  }
+
+  // 初始化渲染第一次
+  renderRoutes(currentDays);
+})();
 </script>
+
+<!-- 手机端推荐方案悬浮按钮 -->
+<button id="mobileRouteBtn" aria-label="查看推荐路线方案">
+  <span class="btn-star">★</span> 推荐方案
+</button>
+
+<!-- 蒙层 -->
+<div id="drawerOverlay"></div>
+
+<!-- 手机端底部推荐方案抽屉 -->
+<div id="mobileRouteDrawer" role="dialog" aria-modal="true" aria-label="推荐路线方案">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title">
+      <span>★</span> 推荐游览方案
+    </div>
+    <button class="drawer-close" id="drawerCloseBtn" aria-label="关闭">✕</button>
+  </div>
+  <div class="drawer-tabs" id="drawerTabs">
+    <button class="drawer-tab active" data-days="2">2天通票</button>
+    <button class="drawer-tab" data-days="4">4天通票</button>
+    <button class="drawer-tab" data-days="6">6天通票</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- 已选路线提示条 -->
+<div id="mobileActiveRouteBanner"></div>
+
 </body>
 </html>
