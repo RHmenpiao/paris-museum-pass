@@ -1227,7 +1227,8 @@ const sites=[
   {id:5,name:"毕加索博物馆",en:"Musée Picasso",cat:"museum",lat:48.8596,lng:2.3627,price:16,reserve:false,top:true,notes:"毕加索作品个人最大收藏"},
   {id:6,name:"克吕尼博物馆",en:"Musée de Cluny",cat:"museum",lat:48.8509,lng:2.3441,price:12,reserve:false,top:false,notes:"国立中世纪博物馆，《独角兽与贵妇》挂毯"},
   {id:7,name:"军事博物馆·荣军院",en:"Musée de l'Armée",cat:"museum",lat:48.8553,lng:2.3125,price:15,reserve:false,top:true,notes:"法国军事历史，含拿破仑盔甲与文物"},
-  {id:8,name:"蓬皮杜中心",en:"Centre Pompidou",cat:"museum",lat:48.8606,lng:2.3522,price:15,reserve:false,top:true,closed:true,notes:"整修中，预计2030年重新开放"},
+  {id:8,name:"蓬皮杜中心",en:"Centre Pompidou",cat:"museum",lat:48.860657,lng:2.352095,price:15,reserve:true,top:true,notes:"现代与当代艺术博物馆，建筑本身即艺术品"},
+
   {id:9,name:"吉美博物馆",en:"Musée Guimet",cat:"museum",lat:48.8654,lng:2.2959,price:13,reserve:false,top:false,notes:"欧洲最大亚洲艺术博物馆"},
   {id:10,name:"布朗利河岸博物馆",en:"Musée du quai Branly",cat:"museum",lat:48.8604,lng:2.2974,price:14,reserve:false,top:false,notes:"非洲、亚洲、大洋洲土著艺术收藏"},
   {id:11,name:"装饰艺术博物馆",en:"Musée des Arts Décoratifs",cat:"museum",lat:48.8636,lng:2.3350,price:15,reserve:false,top:false,notes:"时尚与装饰艺术，珠宝、家具精品"},
@@ -1252,7 +1253,28 @@ const sites=[
   {id:30,name:"文森城堡",en:"Château de Vincennes",cat:"palace",lat:48.8441,lng:2.4354,price:11,reserve:false,top:false,outside:false,notes:"14世纪中世纪皇家城堡，有护城河"},
   {id:31,name:"孔代博物馆·尚蒂伊城堡",en:"Château de Chantilly",cat:"palace",lat:49.1937,lng:2.4842,price:18,reserve:false,top:false,outside:true,notes:"法国最美城堡之一，孔代亲王收藏"},
   {id:32,name:"贡比涅宫",en:"Palais de Compiègne",cat:"palace",lat:49.4160,lng:2.8283,price:10,reserve:false,top:false,outside:true,notes:"帝国时代皇宫，拿破仑三世居所"},
-  {id:33,name:"马尔迈松城堡",en:"Château de Malmaison",cat:"palace",lat:48.8723,lng:2.1606,price:9,reserve:false,top:false,outside:true,notes:"约瑟芬皇后官邸，帝国时期家具陈设"}
+  {id:33,name:"马尔迈松城堡",en:"Château de Malmaison",cat:"palace",lat:48.8723,lng:2.1606,price:9,reserve:false,top:false,outside:true,notes:"约瑟芬皇后官邸，帝国时期家具陈设"},
+  
+
+  {id:35,name:"布朗利河岸博物馆",en:"Musée du quai Branly - Jacques Chirac",cat:"museum",lat:48.8604,lng:2.2974,price:14,reserve:false,top:false,notes:"非洲、亚洲、大洋洲、美洲土著艺术收藏"},
+  {id:36,name:"科学与工业城",en:"Cité des sciences et de l'industrie",cat:"museum",lat:48.8950,lng:2.3875,price:12,reserve:false,top:false,notes:"欧洲最大科技博物馆，互动体验丰富"},
+  {id:37,name:"法国电影资料馆",en:"La Cinémathèque française",cat:"museum",lat:48.8380,lng:2.3805,price:11,reserve:false,top:false,notes:"电影历史与文物，梅里埃收藏"},
+  {id:38,name:"建筑与遗产城",en:"Cité de l'Architecture et du Patrimoine",cat:"museum",lat:48.8620,lng:2.2900,price:10,reserve:false,top:false,notes:"法国建筑历史，教堂模型与壁画复制品"},
+  {id:39,name:"国家考古博物馆",en:"Musée d'Archéologie nationale",cat:"museum",lat:48.8969,lng:2.0931,price:8,reserve:false,top:false,outside:true,notes:"法国史前至中世纪考古文物"},
+  {id:40,name:"航空与航天博物馆",en:"Musée de l'Air et de l'Espace",cat:"museum",lat:48.9467,lng:2.4350,price:16,reserve:false,top:false,outside:true,notes:"法国航空历史，协和飞机、空客原型"},
+  {id:41,name:"解放勋章博物馆",en:"Musée de l'Ordre de la Libération",cat:"museum",lat:48.8549,lng:2.3122,price:0,reserve:false,top:false,notes:"自由法国历史，戴高乐将军事迹"},
+  {id:42,name:"莫里斯·丹尼斯博物馆",en:"Musée Maurice Denis",cat:"museum",lat:48.8069,lng:2.1131,price:8,reserve:false,top:false,outside:true,notes:"象征主义画家，纳比派创始人"},
+  {id:43,name:"皇家港博物馆",en:"Musée de Port-Royal des Champs",cat:"museum",lat:48.7464,lng:2.0236,price:7,reserve:false,top:false,outside:true,notes:"法国天主教詹森派历史遗址"},
+  {id:44,name:"国家文艺复兴博物馆",en:"Musée national de la Renaissance",cat:"museum",lat:49.0161,lng:2.3800,price:8,reserve:false,top:false,outside:true,notes:"埃库昂城堡，文艺复兴艺术收藏"},
+  {id:45,name:"巴黎爱乐乐团",en:"Philharmonie de Paris",cat:"museum",lat:48.8894,lng:2.3942,price:12,reserve:false,top:false,notes:"音乐博物馆，乐器收藏与音乐历史"},
+  {id:46,name:"塞夫尔国家陶瓷博物馆",en:"Musée national de la Céramique de Sèvres",cat:"museum",lat:48.8281,lng:2.2222,price:9,reserve:false,top:false,outside:true,notes:"法国瓷器精品，塞夫尔瓷器厂作品"},
+  {id:47,name:"沙阿利皇家修道院",en:"Abbaye royale de Chaalis",cat:"monument",lat:49.1472,lng:2.6864,price:9,reserve:false,top:false,outside:true,notes:"西多会修道院遗址，附艺术博物馆"},
+  {id:48,name:"皮埃尔丰城堡",en:"Château de Pierrefonds",cat:"palace",lat:49.3469,lng:2.9797,price:9,reserve:false,top:false,outside:true,notes:"中世纪城堡，拿破仑三世时期修复"},
+  {id:49,name:"香槟畔马恩城堡",en:"Château de Champs-sur-Marne",cat:"palace",lat:48.8536,lng:2.6031,price:8,reserve:false,top:false,outside:true,notes:"18世纪古典主义城堡，法式花园"},
+  {id:50,name:"梅松城堡",en:"Château de Maisons",cat:"palace",lat:48.9478,lng:2.1561,price:8,reserve:false,top:false,outside:true,notes:"路易十三时期建筑杰作"},
+  {id:51,name:"朗布依埃城堡",en:"Château de Rambouillet",cat:"palace",lat:48.6472,lng:1.8294,price:10,reserve:false,top:false,outside:true,notes:"法国总统夏宫，森林狩猎行宫"},
+  {id:52,name:"赎罪礼拜堂",en:"Chapelle expiatoire",cat:"monument",lat:48.8742,lng:2.3222,price:7,reserve:false,top:false,notes:"路易十六与玛丽·安托瓦内特纪念堂"},
+  {id:53,name:"萨伏耶别墅",en:"Villa Savoye",cat:"monument",lat:48.9244,lng:2.0281,price:9,reserve:true,top:false,outside:true,notes:"勒·柯布西耶现代建筑代表作"}
 ];
 const catColors={museum:'#4a9eff',monument:'#ff6b6b',palace:'#a855f7',outside:'#22c55e'};
 const catIcons={museum:'🏛',monument:'🏛',palace:'🏰',outside:'🌿'};
@@ -1417,6 +1439,55 @@ Day6下午：自由探索附近景点或休闲`,
       saved:'€350+',
       mustVisit:false,
       tips:'这是所有6天通票的最优组合，参加者能体验到法国文化的全景'
+    },
+    // =============== 新增路线（包含新景点） ===============
+    {
+      name:'现代艺术探索之旅',
+      desc:'聚焦现代与当代艺术，包含蓬皮杜中心等新景点',
+      day:`Day 1: 蓬皮杜中心+布朗利河岸
+Day 2: 橘园+爱乐乐团
+Day 3: 毕加索+装饰艺术
+Day 4: 罗丹+德拉克罗瓦`,
+      sites:[34,35,3,45,5,11,4,14],
+      schedule:`Day1：蓬皮杜中心（上午3h）→ 布朗利河岸博物馆（下午2h）
+Day2：橘园美术馆（上午1.5h）→ 巴黎爱乐乐团（下午2h）
+Day3：毕加索博物馆（上午2.5h）→ 装饰艺术博物馆（下午1.5h）
+Day4：罗丹美术馆（上午2h）→ 德拉克罗瓦博物馆（下午1h）`,
+      saved:'€180+',
+      mustVisit:true,
+      tips:'现代艺术爱好者必选路线，蓬皮杜中心需提前预约'
+    },
+    {
+      name:'科技与历史全景',
+      desc:'结合科技博物馆与历史古迹，适合家庭游客',
+      day:`Day 1: 科学与工业城+航空博物馆
+Day 2: 发现宫+建筑遗产城
+Day 3: 凯旋门+先贤祠
+Day 4: 圣礼拜堂+古监狱`,
+      sites:[36,40,19,38,20,21,22,23],
+      schedule:`Day1：科学与工业城（上午3h）→ 航空与航天博物馆（下午3h）
+Day2：发现宫（上午2h）→ 建筑与遗产城（下午2h）
+Day3：凯旋门（上午1.5h）→ 先贤祠（下午1.5h）
+Day4：圣礼拜堂（上午1.5h）→ 古监狱（下午1h）`,
+      saved:'€200+',
+      mustVisit:false,
+      tips:'适合家庭游客，科技博物馆互动性强，孩子喜欢'
+    },
+    {
+      name:'城堡宫殿巡礼',
+      desc:'探索法国最著名的城堡和宫殿，感受皇室历史',
+      day:`Day 1: 凡尔赛宫
+Day 2: 枫丹白露+香槟城堡
+Day 3: 文森城堡+梅松城堡
+Day 4: 朗布依埃+皮埃尔丰`,
+      sites:[28,29,49,30,50,51,48],
+      schedule:`Day1：凡尔赛宫（全天，需预约）
+Day2：枫丹白露宫（上午3h）→ 香槟畔马恩城堡（下午2h）
+Day3：文森城堡（上午2h）→ 梅松城堡（下午2h）
+Day4：朗布依埃城堡（上午2.5h）→ 皮埃尔丰城堡（下午2.5h）`,
+      saved:'€250+',
+      mustVisit:true,
+      tips:'城堡之间距离较远，建议租车或使用公共交通，提前规划路线'
     }
   ]
 };
