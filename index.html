@@ -171,7 +171,7 @@
 
     .features {
       max-width: 1200px;
-      margin: -80px auto 60px;
+      margin: -80px auto 0;
       padding: 0 20px;
       position: relative;
       z-index: 10;
@@ -180,47 +180,60 @@
       gap: 25px;
     }
 
-    .feature-card-container {
-      grid-column: span 1;
-    }
-
-    .feature-card.expanded {
-      grid-column: 1 / -1;
+    /* 独立展开面板容器：在卡片组下方，默认隐藏 */
+    .feature-panel-wrap {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
       position: relative;
-      z-index: 20;
-      margin-top: 25px;
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
+      z-index: 9;
     }
 
-    .feature-card.expanded .price-table,
-    .feature-card.expanded .booking-info,
-    .feature-card.expanded .attraction-details {
+    .feature-panel {
+      display: none;
+    }
+
+    .feature-panel.active {
       display: block;
-      max-height: none;
-      margin-top: 25px;
+      animation: panelSlideDown 0.3s ease;
+    }
+
+    @keyframes panelSlideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 展开的面板内部内容区样式 */
+    .feature-panel .price-table,
+    .feature-panel .booking-info,
+    .feature-panel .attraction-details {
+      display: block;
       padding: 30px;
       background: white;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 2px solid #667eea;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+      margin-top: 0;
+      max-height: none;
+    }
+
+    /* 点击时激活的卡片视觉效果（下沉+高亮） */
+    .feature-card.active-card {
+      transform: translateY(8px);
+      border: 2px solid #667eea;
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
+      box-shadow: 0 12px 30px rgba(102,126,234,0.25);
     }
 
     @media (max-width: 1024px) {
       .features {
         grid-template-columns: repeat(2, 1fr);
       }
-      .feature-card.expanded {
-        grid-column: 1 / -1;
-      }
     }
 
     @media (max-width: 768px) {
       .features {
         grid-template-columns: 1fr;
-      }
-      .feature-card.expanded {
-        grid-column: 1;
       }
     }
 
@@ -233,20 +246,13 @@
       transition: all 0.3s ease;
       position: relative;
       z-index: 1;
+      border: 2px solid transparent;
     }
 
     .feature-card:hover {
       transform: translateY(-3px);
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-
-    .feature-card.expanded {
-      transform: translateY(20px);
-      z-index: 10;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      border: 2px solid #667eea;
-      background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
     }
 
     .feature-card-content {
@@ -265,20 +271,13 @@
     }
 
     .price-table, .booking-info, .attraction-details {
-      display: none;
-      margin-top: 20px;
+      margin-top: 0;
       padding: 25px;
       background: #f9f9ff;
       border-radius: 10px;
       border-left: 4px solid #667eea;
-      max-height: 400px;
       overflow-y: auto;
       box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-    }
-
-    .price-table.show, .booking-info.show, .attraction-details.show {
-      display: block;
-      animation: fadeIn 0.3s ease;
     }
 
     @keyframes fadeIn {
@@ -616,7 +615,8 @@
     </div>
   </section>
 
-  <section class="features">
+  <!-- 四个功能卡片（始终固定在一排） -->
+  <section class="features" id="featureCards">
     <div class="feature-card" data-feature="map">
       <div class="feature-card-content">
         <div class="feature-icon">🗺️</div>
@@ -632,7 +632,31 @@
         <p>2026年最新官方价格，通票 vs 单票价格清晰对比</p>
         <div class="feature-card-click-hint">点击查看价格</div>
       </div>
-      <div class="price-table" id="priceTable">
+    </div>
+    <div class="feature-card" data-feature="booking">
+      <div class="feature-card-content">
+        <div class="feature-icon">📋</div>
+        <h3>预约提示</h3>
+        <p>哪些景点需要提前预约，一目了然</p>
+        <div class="feature-card-click-hint">点击查看提醒</div>
+      </div>
+    </div>
+    <div class="feature-card" data-feature="recommend">
+      <div class="feature-card-content">
+        <div class="feature-icon">🌟</div>
+        <h3>必去推荐</h3>
+        <p>卢浮宫、凡尔赛宫等必去景点标注推荐等级</p>
+        <div class="feature-card-click-hint">点击查看详情</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 展开内容面板（独立放在卡片组下方，不影响卡片排列） -->
+  <div class="feature-panel-wrap" id="featurePanelWrap">
+
+    <!-- 票价对比面板 -->
+    <div class="feature-panel" id="panelPrice">
+      <div class="price-table">
         <h4>巴黎博物馆通票价格（2026年3月）</h4>
         <div class="price-grid">
           <div class="price-item">
@@ -669,14 +693,10 @@
         <p style="margin-top: 12px; font-size: 14px; color: #666;">✅ 购买通票：<a href="https://m.tb.cn/h.iQwNgaY?tk=x0CL52X0JO7" target="_blank" style="color:#667eea;font-weight:bold;">点击前往闲鱼店铺</a></p>
       </div>
     </div>
-    <div class="feature-card" data-feature="booking">
-      <div class="feature-card-content">
-        <div class="feature-icon">📋</div>
-        <h3>预约提示</h3>
-        <p>哪些景点需要提前预约，一目了然</p>
-        <div class="feature-card-click-hint">点击查看提醒</div>
-      </div>
-      <div class="booking-info" id="bookingInfo">
+
+    <!-- 预约提示面板 -->
+    <div class="feature-panel" id="panelBooking">
+      <div class="booking-info">
         <h4 style="color: #e63946;">⚠️ 必须提前预约的景点</h4>
         <div class="booking-list">
           <div class="booking-item"><strong>卢浮宫：</strong><span style="color:#e63946;font-weight:bold;">必须预约</span>，旺季排队2-3小时以上</div>
@@ -695,14 +715,10 @@
         </div>
       </div>
     </div>
-    <div class="feature-card" data-feature="recommend">
-      <div class="feature-card-content">
-        <div class="feature-icon">🌟</div>
-        <h3>必去推荐</h3>
-        <p>卢浮宫、凡尔赛宫等必去景点标注推荐等级</p>
-        <div class="feature-card-click-hint">点击查看详情</div>
-      </div>
-      <div class="attraction-details" id="attractionDetails">
+
+    <!-- 必去推荐面板 -->
+    <div class="feature-panel" id="panelRecommend">
+      <div class="attraction-details">
         <h4>🏛️ 卢浮宫（★★★★★）</h4>
         <p><strong>特色：</strong>世界最大艺术博物馆，《蒙娜丽莎》、《米洛的维纳斯》、《胜利女神》</p>
         <p><strong>注意事项：</strong>需安检，热门展厅拥挤，建议早晨入场或预约下午场</p>
@@ -739,7 +755,8 @@
         <p><strong>票价：</strong>€14（通票免费进入）</p>
       </div>
     </div>
-  </section>
+
+  </div>
 
   <div class="content">
     <section class="section" id="map">
@@ -912,18 +929,32 @@
   </footer>
 
   <script>
-    // 功能卡片点击交互
+    // 功能卡片点击交互 - 面板版（卡片位置固定，内容在卡片组下方独立展示）
     document.addEventListener('DOMContentLoaded', function() {
       const featureCards = document.querySelectorAll('.feature-card');
-      const featuresContainer = document.querySelector('.features');
-      let currentExpandedCard = null;
 
-      // 为每个卡片添加点击事件
+      // 每个 data-feature 对应的面板 ID
+      const panelMap = {
+        price:     'panelPrice',
+        booking:   'panelBooking',
+        recommend: 'panelRecommend'
+      };
+
+      let currentFeature = null;
+
+      function closeAll() {
+        featureCards.forEach(c => c.classList.remove('active-card'));
+        Object.values(panelMap).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('active');
+        });
+        currentFeature = null;
+      }
+
       featureCards.forEach(card => {
         const featureType = card.getAttribute('data-feature');
-        const infoDiv = card.querySelector('.price-table, .booking-info, .attraction-details');
-        
-        // 第一个卡片（地图）保持链接功能
+
+        // 地图卡片直接跳转
         if (featureType === 'map') {
           card.addEventListener('click', function(e) {
             e.preventDefault();
@@ -932,52 +963,33 @@
           return;
         }
 
-        // 其他三个卡片添加交互
         card.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // 如果点击的是内部链接（如闲鱼链接），不触发卡片折叠
           if (e.target.tagName === 'A') return;
-          
-          // 检查当前卡片是否已经展开
-          const isAlreadyExpanded = card.classList.contains('expanded');
-          
-          // 如果当前已经有展开的卡片，先关闭它
-          if (currentExpandedCard && currentExpandedCard !== card) {
-            currentExpandedCard.classList.remove('expanded');
-            const prevInfoDiv = currentExpandedCard.querySelector('.price-table, .booking-info, .attraction-details');
-            if (prevInfoDiv) prevInfoDiv.classList.remove('show');
-          }
-          
-          // 如果当前卡片已经展开，则关闭它
-          if (isAlreadyExpanded) {
-            card.classList.remove('expanded');
-            if (infoDiv) infoDiv.classList.remove('show');
-            currentExpandedCard = null;
+
+          const panelId = panelMap[featureType];
+          if (!panelId) return;
+
+          if (currentFeature === featureType) {
+            closeAll();
           } else {
-            // 展开当前卡片
-            card.classList.add('expanded');
-            if (infoDiv) infoDiv.classList.add('show');
-            currentExpandedCard = card;
-            
-            // 平滑滚动到可见区域
-            setTimeout(() => {
-              const rect = card.getBoundingClientRect();
-              if (rect.top < 100) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-            }, 50);
+            closeAll();
+            card.classList.add('active-card');
+            const panel = document.getElementById(panelId);
+            if (panel) {
+              panel.classList.add('active');
+              setTimeout(() => {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 50);
+            }
+            currentFeature = featureType;
           }
         });
       });
 
-      // 点击页面其他地方关闭展开的内容
+      // 点击页面其他地方关闭面板
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.feature-card') && currentExpandedCard) {
-          currentExpandedCard.classList.remove('expanded');
-          const infoDiv = currentExpandedCard.querySelector('.price-table, .booking-info, .attraction-details');
-          if (infoDiv) infoDiv.classList.remove('show');
-          currentExpandedCard = null;
+        if (!e.target.closest('.feature-card') && !e.target.closest('.feature-panel-wrap')) {
+          closeAll();
         }
       });
     });
