@@ -850,20 +850,102 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .route-name { font-weight: 600; color: #fff; margin-bottom: 4px; }
     .route-desc { font-size: 10px; color: #999; line-height: 1.4; margin-bottom: 4px; }
     .route-day { font-size: 9px; color: #888; line-height: 1.3; font-style: italic; }
-    @media(max-width:700px){ 
-      .sidebar { display:none; } 
-      #routesContainer { display:none; }
-      header h1 { font-size: 15px; } 
-      .main { flex-direction: column; }
-      #map { flex: 1 0 auto; width: 100%; height: calc(100vh - 150px); }
-      .filter-bar { padding: 8px 10px; gap: 6px; }
-      .filter-label { font-size: 11px; }
-      .filter-btn { padding: 5px 10px; font-size: 12px; }
+    /* ── 手机端底部 Tab 导航栏 ── */
+    #mobileTabBar {
+      display: none;
+    }
+    @media(max-width:700px){
+      /* body 底部给 tab 留位置 */
+      body { padding-bottom: 58px; }
+      /* header 精简：只保留 logo + 购票按钮 */
+      header {
+        padding: 8px 14px;
+        flex-wrap: nowrap;
+        height: 48px;
+        min-height: 48px;
+      }
+      .logo { font-size: 13px; }
+      header h1 { display: none !important; }
+      header p  { display: none !important; }
+      .header-right { display: none !important; }
+      /* nav 只保留购票按钮 */
+      .nav-links { gap: 8px; }
+      .nav-links a:first-child { display: none; }  /* 隐藏"返回首页" */
+      .nav-links a[href^="tel"] { display: none; }  /* 隐藏电话 */
+      /* 搜索栏 */
+      .filter-bar {
+        padding: 6px 10px;
+        gap: 5px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .filter-bar::-webkit-scrollbar { display: none; }
+      .filter-label { display: none; }
+      .filter-btn { padding: 4px 9px; font-size: 11px; white-space: nowrap; }
+      .reserve-btn { padding: 4px 9px; font-size: 11px; white-space: nowrap; }
       .divider { display: none; }
-      .reserve-btn { padding: 5px 10px; font-size: 12px; }
+      /* 布局：竖向、占满剩余 */
+      .main { flex-direction: column; flex: 1; overflow: hidden; }
+      /* 地图面板 */
+      #map { width: 100%; flex: 1; }
+      /* 侧边栏（景点列表）：初始隐藏，通过 tab 控制显示 */
+      .sidebar {
+        display: none;
+        width: 100% !important;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .sidebar.mobile-active {
+        display: flex !important;
+        flex-direction: column;
+      }
+      #routesContainer { display: none !important; }
+      /* 地图 tab 显示时隐藏侧边栏 */
+      #map.mobile-hidden { display: none !important; }
       /* 确保popup在抽屉上方显示 */
       .leaflet-popup { z-index: 2000 !important; }
       .leaflet-popup-content-wrapper { z-index: 2001 !important; }
+      /* 底部 Tab 导航 */
+      #mobileTabBar {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 58px;
+        background: #141923;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        z-index: 1300;
+        align-items: stretch;
+        box-shadow: 0 -2px 16px rgba(0,0,0,0.45);
+      }
+      .tab-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        cursor: pointer;
+        color: #666;
+        font-size: 10px;
+        font-weight: 600;
+        border: none;
+        background: none;
+        transition: color 0.2s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .tab-item.active { color: #667eea; }
+      .tab-item svg, .tab-item .tab-icon { font-size: 20px; line-height: 1; }
+      /* stats-bar 在手机端更紧凑 */
+      .stats-bar { padding: 4px 12px; gap: 12px; top: 8px; }
+      .stat-val { font-size: 13px; }
+      .stat-lbl { font-size: 9px; }
+      /* legend 在手机端隐藏（节省空间） */
+      .legend { display: none; }
+      /* sidebar 在手机端铺满高度 */
+      .sidebar { height: calc(100vh - 48px - 40px - 58px); }
+      /* 搜索栏高度约40px，header 48px，tab 58px */
     }
   
     #routesContainer { position: absolute; right: 0; top: 0; width: 320px; height: 100%; background: linear-gradient(180deg,#0a1628 0%,#0d1b2a 50%,#0a1628 100%); box-shadow: -2px 0 15px rgba(0,0,0,0.5); z-index: 500; overflow-y: auto; border-left: 1px solid rgba(102,126,234,0.2); padding: 10px 0; }
@@ -928,7 +1010,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         gap: 6px;
         position: fixed;
         right: 16px;
-        bottom: 28px;
+        bottom: 80px;
         z-index: 1200;
         background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
         color: #fff;
@@ -957,7 +1039,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
       #mobileRouteDrawer {
         display: block;
         position: fixed;
-        left: 0; right: 0; bottom: 0;
+        left: 0; right: 0; bottom: 58px;
         z-index: 1500;
         background: #0d1b2a;
         border-radius: 20px 20px 0 0;
@@ -1494,6 +1576,7 @@ Day4：朗布依埃城堡（上午2.5h）→ 皮埃尔丰城堡（下午2.5h）`
 
 function getCat(s){return s.outside?'outside':s.cat;}
 const map=L.map('map',{center:[48.860,2.347],zoom:13,zoomControl:true});
+window.map = map; // 暴露给手机端 Tab 切换使用
 
 // 定义多个地图图层
 const baseLayers={
@@ -1764,7 +1847,72 @@ function buildRoutesUI(){
 // 初始化路线UI
 buildRoutesUI();
 
-const fitBtn=L.control({position:'topright'});
+// =============================================
+// 手机端 Tab 切换：地图 / 景点 / 路线
+// =============================================
+function switchMobileTab(tab){
+  if(window.innerWidth > 700) return;
+  const mapEl     = document.getElementById('map');
+  const sidebarEl = document.querySelector('.sidebar');
+  const drawerEl  = document.getElementById('mobileRouteDrawer');
+  const overlayEl = document.getElementById('drawerOverlay');
+  const tabMap    = document.getElementById('tabMap');
+  const tabList   = document.getElementById('tabList');
+  const tabRoute  = document.getElementById('tabRoute');
+  const mobileBtn = document.getElementById('mobileRouteBtn');
+
+  // 重置所有 tab 高亮
+  [tabMap, tabList, tabRoute].forEach(t=>{ if(t) t.classList.remove('active'); });
+  // 重置所有面板
+  if(mapEl) mapEl.classList.remove('mobile-hidden');
+  if(sidebarEl){ sidebarEl.classList.remove('mobile-active'); sidebarEl.style.display='none'; }
+  if(drawerEl){ drawerEl.classList.remove('open'); }
+  if(overlayEl){ overlayEl.classList.remove('show'); }
+  if(mobileBtn) mobileBtn.style.display = 'none';
+
+  if(tab === 'map'){
+    tabMap.classList.add('active');
+    if(mapEl) mapEl.classList.remove('mobile-hidden');
+    // 地图 tab 下显示悬浮路线按钮
+    if(mobileBtn) mobileBtn.style.display = 'flex';
+    // 刷新地图尺寸
+    setTimeout(()=>{ if(window.map && window.map.invalidateSize) window.map.invalidateSize(); }, 100);
+  } else if(tab === 'list'){
+    tabList.classList.add('active');
+    if(mapEl) mapEl.classList.add('mobile-hidden');
+    if(sidebarEl){
+      sidebarEl.style.display = 'flex';
+      sidebarEl.classList.add('mobile-active');
+    }
+  } else if(tab === 'route'){
+    tabRoute.classList.add('active');
+    if(mapEl) mapEl.classList.add('mobile-hidden');
+    // 路线 tab：直接展开抽屉式路线面板（复用现有抽屉逻辑）
+    if(drawerEl){ drawerEl.classList.add('open'); }
+    if(overlayEl){ overlayEl.classList.add('show'); }
+  }
+}
+
+// 手机端初始化：绑定抽屉关闭时自动回到地图 Tab
+window.addEventListener('load', function(){
+  if(window.innerWidth > 700) return;
+  // 点击蒙层关闭抽屉时，切回地图 tab
+  const overlayEl = document.getElementById('drawerOverlay');
+  if(overlayEl){
+    overlayEl.addEventListener('click', function(){
+      switchMobileTab('map');
+    });
+  }
+  // 关闭按钮同样切回地图 tab
+  const closeBtn = document.getElementById('drawerCloseBtn');
+  if(closeBtn){
+    closeBtn.addEventListener('click', function(){
+      switchMobileTab('map');
+    });
+  }
+});
+
+
 fitBtn.onAdd=function(){
   const div=document.createElement('div');div.className='leaflet-bar';
   div.innerHTML='<a href="#" title="适应视图" style="font-size:16px;line-height:26px;">&#8862;</a>';
@@ -1813,13 +1961,16 @@ fitBtn.addTo(map);
   function closeDrawer(){
     drawer.classList.remove('open');
     overlay.classList.remove('show');
+    // 切回地图 Tab
+    if(typeof switchMobileTab === 'function') switchMobileTab('map');
   }
 
   openBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  overlay.addEventListener('click', closeDrawer);
+  // closeBtn 和 overlay 改由 switchMobileTab 统一管理，这里不重复绑定
+  // closeBtn.addEventListener('click', closeDrawer);
+  // overlay.addEventListener('click', closeDrawer);
   
-  // 点击抽屉把手也可以关闭
+  // 点击抽屉把手关闭
   drawer.querySelector('.drawer-handle').addEventListener('click', closeDrawer);
   
   // 防止抽屉内部点击事件冒泡到蒙层
@@ -1871,7 +2022,7 @@ fitBtn.addTo(map);
           currentRouteIds=[];
           activeCard = null;
           banner.classList.remove('show');
-          closeDrawer();
+          if(typeof switchMobileTab === 'function') switchMobileTab('map');
           return;
         }
         // 取消之前的激活
@@ -1883,8 +2034,8 @@ fitBtn.addTo(map);
         // 显示顶部提示条
         banner.textContent = `★ 当前路线：${route.name}（${days}天）· 点击地图查看景点`;
         banner.classList.add('show');
-        // 关闭抽屉，让用户看地图
-        closeDrawer();
+        // 切回地图 Tab 让用户看地图
+        if(typeof switchMobileTab === 'function') switchMobileTab('map');
         // 3秒后隐藏提示条
         clearTimeout(banner._timer);
         banner._timer = setTimeout(()=>banner.classList.remove('show'), 4000);
@@ -1929,6 +2080,22 @@ fitBtn.addTo(map);
   });
 })();
 </script>
+
+<!-- 手机端底部 Tab 导航 -->
+<div id="mobileTabBar">
+  <button class="tab-item active" id="tabMap" onclick="switchMobileTab('map')">
+    <span class="tab-icon">🗺️</span>
+    <span>地图</span>
+  </button>
+  <button class="tab-item" id="tabList" onclick="switchMobileTab('list')">
+    <span class="tab-icon">📍</span>
+    <span>景点</span>
+  </button>
+  <button class="tab-item" id="tabRoute" onclick="switchMobileTab('route')">
+    <span class="tab-icon">🧭</span>
+    <span>路线</span>
+  </button>
+</div>
 
 <!-- 手机端推荐方案悬浮按钮 -->
 <button id="mobileRouteBtn" aria-label="查看推荐路线方案">
