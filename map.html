@@ -1363,7 +1363,7 @@ const catIcons={museum:'🏛',monument:'🏛',palace:'🏰',outside:'🌿'};
 const catNames={museum:'博物馆',monument:'历史古迹',palace:'宫殿城堡',outside:'近郊景点'};
 
 // 🎯 专业博物馆通票推荐路线（基于官方Paris Museum Pass攻略）
-const recommendedRoutes={
+const recommendedRoutes=window.recommendedRoutes={
   2:[
     {
       name:'快闪艺术双馆游',
@@ -1707,7 +1707,7 @@ let currentRoutePolyline=null;
 let routeMarkers=[];
 
 // 绘制路线的函数
-function drawRoute(siteIds){
+window.drawRoute = function drawRoute(siteIds){
   // 移除旧的连线和标记
   if(currentRoutePolyline)map.removeLayer(currentRoutePolyline);
   routeMarkers.forEach(m=>map.removeLayer(m));
@@ -1850,6 +1850,105 @@ buildRoutesUI();
 // =============================================
 // 手机端 Tab 切换：地图 / 景点 / 路线
 // =============================================
+
+// 构建手机端路线全屏面板（只创建一次）
+function ensureMobileRoutePanel(){
+  if(document.getElementById('mobileRoutePanel')) return;
+  const panel = document.createElement('div');
+  panel.id = 'mobileRoutePanel';
+  panel.style.cssText = [
+    'display:none',
+    'position:fixed',
+    'top:0','left:0','right:0',
+    'bottom:58px',        // 留出 Tab 导航高度
+    'background:#0d1b2a',
+    'z-index:1400',
+    'overflow-y:auto',
+    '-webkit-overflow-scrolling:touch',
+    'padding:0 0 12px 0'
+  ].join(';');
+
+  panel.innerHTML = `
+    <div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#0d1b2a;z-index:10;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <span style="font-size:15px;font-weight:700;color:#c9a227;">★ 推荐游览方案</span>
+      <div style="display:flex;gap:6px;" id="mobileRouteDayTabs">
+        <button data-days="2" class="mrd-tab mrd-active" style="padding:5px 14px;border-radius:20px;border:1px solid #667eea;background:#667eea;color:#fff;font-size:12px;cursor:pointer;font-weight:600;">2天</button>
+        <button data-days="4" class="mrd-tab" style="padding:5px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#aaa;font-size:12px;cursor:pointer;">4天</button>
+        <button data-days="6" class="mrd-tab" style="padding:5px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#aaa;font-size:12px;cursor:pointer;">6天</button>
+      </div>
+    </div>
+    <div id="mobileRoutePanelBody" style="padding:10px 14px;"></div>
+  `;
+  document.body.appendChild(panel);
+
+  let panelCurrentDays = 2;
+  function renderPanelRoutes(days){
+    const body = document.getElementById('mobileRoutePanelBody');
+    if(!body) return;
+    const routes = (window.recommendedRoutes && window.recommendedRoutes[days]) || [];
+    const sorted = [...routes].sort((a,b)=>{
+      if(a.mustVisit && !b.mustVisit) return -1;
+      if(!a.mustVisit && b.mustVisit) return 1;
+      return 0;
+    });
+    body.innerHTML = '';
+    sorted.forEach(route=>{
+      const card = document.createElement('div');
+      card.style.cssText = 'background:'+(route.mustVisit?'rgba(255,168,0,0.07)':'rgba(255,255,255,0.04)')+';border:1px solid '+(route.mustVisit?'rgba(255,168,0,0.3)':'rgba(255,255,255,0.08)')+';border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;';
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:14px;font-weight:700;color:${route.mustVisit?'#f0d98a':'#e0e0e0'};">${route.mustVisit?'★ ':''}${route.name}</span>
+          ${route.mustVisit?'<span style="font-size:10px;background:#e67e22;color:#fff;padding:2px 8px;border-radius:10px;font-weight:600;">必去首选</span>':''}
+        </div>
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:6px;">节省 ${route.saved}</div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:6px;line-height:1.5;">${route.desc}</div>
+        <div style="font-size:11px;color:#888;line-height:1.6;">${route.schedule}</div>
+        ${route.tips?`<div style="font-size:11px;color:#6ab0de;margin-top:6px;">💡 ${route.tips}</div>`:''}
+        <div style="margin-top:10px;text-align:center;">
+          <button style="width:100%;padding:8px;border-radius:8px;border:none;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:13px;font-weight:600;cursor:pointer;" onclick="event.stopPropagation();">🗺️ 在地图上查看此路线</button>
+        </div>
+      `;
+      // 点击卡片或按钮都跳到地图显示路线
+      function goToMap(){
+        drawRoute(route.sites);
+        const banner = document.getElementById('mobileActiveRouteBanner');
+        if(banner){
+          banner.textContent = `★ 当前路线：${route.name}（${days}天）· 点击景点查看详情`;
+          banner.classList.add('show');
+          clearTimeout(banner._timer);
+          banner._timer = setTimeout(()=>banner.classList.remove('show'), 4000);
+        }
+        switchMobileTab('map');
+      }
+      card.querySelector('button').addEventListener('click', function(e){ e.stopPropagation(); goToMap(); });
+      card.addEventListener('click', goToMap);
+      body.appendChild(card);
+    });
+  }
+
+  // 天数 Tab 切换
+  panel.querySelectorAll('.mrd-tab').forEach(btn=>{
+    btn.addEventListener('click', function(){
+      panel.querySelectorAll('.mrd-tab').forEach(b=>{
+        b.style.background='transparent';
+        b.style.color='#aaa';
+        b.style.borderColor='rgba(255,255,255,0.15)';
+        b.classList.remove('mrd-active');
+      });
+      this.style.background='#667eea';
+      this.style.color='#fff';
+      this.style.borderColor='#667eea';
+      this.classList.add('mrd-active');
+      panelCurrentDays = parseInt(this.dataset.days);
+      renderPanelRoutes(panelCurrentDays);
+    });
+  });
+
+  // 挂载渲染函数到面板元素
+  panel._render = renderPanelRoutes;
+  panel._getCurrentDays = ()=>panelCurrentDays;
+}
+
 function switchMobileTab(tab){
   if(window.innerWidth > 700) return;
   const mapEl     = document.getElementById('map');
@@ -1861,56 +1960,41 @@ function switchMobileTab(tab){
   const tabRoute  = document.getElementById('tabRoute');
   const mobileBtn = document.getElementById('mobileRouteBtn');
 
-  // 重置所有 tab 高亮
+  ensureMobileRoutePanel();
+  const routePanel = document.getElementById('mobileRoutePanel');
+
+  // 重置所有 Tab 高亮
   [tabMap, tabList, tabRoute].forEach(t=>{ if(t) t.classList.remove('active'); });
-  // 重置所有面板
+  // 隐藏所有面板
   if(mapEl) mapEl.classList.remove('mobile-hidden');
   if(sidebarEl){ sidebarEl.classList.remove('mobile-active'); sidebarEl.style.display='none'; }
   if(drawerEl){ drawerEl.classList.remove('open'); }
   if(overlayEl){ overlayEl.classList.remove('show'); }
   if(mobileBtn) mobileBtn.style.display = 'none';
+  if(routePanel) routePanel.style.display = 'none';
 
   if(tab === 'map'){
-    tabMap.classList.add('active');
+    if(tabMap) tabMap.classList.add('active');
     if(mapEl) mapEl.classList.remove('mobile-hidden');
-    // 地图 tab 下显示悬浮路线按钮
-    if(mobileBtn) mobileBtn.style.display = 'flex';
     // 刷新地图尺寸
-    setTimeout(()=>{ if(window.map && window.map.invalidateSize) window.map.invalidateSize(); }, 100);
+    setTimeout(()=>{ if(window.map && window.map.invalidateSize) window.map.invalidateSize(); }, 150);
   } else if(tab === 'list'){
-    tabList.classList.add('active');
+    if(tabList) tabList.classList.add('active');
     if(mapEl) mapEl.classList.add('mobile-hidden');
     if(sidebarEl){
       sidebarEl.style.display = 'flex';
       sidebarEl.classList.add('mobile-active');
     }
   } else if(tab === 'route'){
-    tabRoute.classList.add('active');
+    if(tabRoute) tabRoute.classList.add('active');
     if(mapEl) mapEl.classList.add('mobile-hidden');
-    // 路线 tab：直接展开抽屉式路线面板（复用现有抽屉逻辑）
-    if(drawerEl){ drawerEl.classList.add('open'); }
-    if(overlayEl){ overlayEl.classList.add('show'); }
+    if(routePanel){
+      routePanel.style.display = 'block';
+      // 渲染路线内容
+      if(routePanel._render) routePanel._render(routePanel._getCurrentDays ? routePanel._getCurrentDays() : 2);
+    }
   }
 }
-
-// 手机端初始化：绑定抽屉关闭时自动回到地图 Tab
-window.addEventListener('load', function(){
-  if(window.innerWidth > 700) return;
-  // 点击蒙层关闭抽屉时，切回地图 tab
-  const overlayEl = document.getElementById('drawerOverlay');
-  if(overlayEl){
-    overlayEl.addEventListener('click', function(){
-      switchMobileTab('map');
-    });
-  }
-  // 关闭按钮同样切回地图 tab
-  const closeBtn = document.getElementById('drawerCloseBtn');
-  if(closeBtn){
-    closeBtn.addEventListener('click', function(){
-      switchMobileTab('map');
-    });
-  }
-});
 
 
 fitBtn.onAdd=function(){
@@ -1961,14 +2045,11 @@ fitBtn.addTo(map);
   function closeDrawer(){
     drawer.classList.remove('open');
     overlay.classList.remove('show');
-    // 切回地图 Tab
-    if(typeof switchMobileTab === 'function') switchMobileTab('map');
   }
 
   openBtn.addEventListener('click', openDrawer);
-  // closeBtn 和 overlay 改由 switchMobileTab 统一管理，这里不重复绑定
-  // closeBtn.addEventListener('click', closeDrawer);
-  // overlay.addEventListener('click', closeDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
   
   // 点击抽屉把手关闭
   drawer.querySelector('.drawer-handle').addEventListener('click', closeDrawer);
